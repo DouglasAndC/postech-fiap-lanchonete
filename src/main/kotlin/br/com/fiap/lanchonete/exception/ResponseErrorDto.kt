@@ -1,3 +1,11 @@
 package br.com.fiap.lanchonete.exception
 
-data class ResponseErrorDto(val message: String, val status: Int)
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
+
+data class ResponseErrorDto(
+    val timestamp: String = OffsetDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
+    val status: Int,
+    val error: String,
+    val messages: List<String> = emptyList()
+)
