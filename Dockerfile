@@ -1,27 +1,24 @@
-# Etapa de preparação do GraalVM
-FROM ghcr.io/graalvm/graalvm-community:17 as graalvm
-RUN gu install native-image
-
-# Etapa de construção usando Maven e GraalVM
+# Fase de construção
 FROM maven:3.8.4-openjdk-17 as builder
-# Copie o GraalVM e o native-image para esta etapa
-COPY --from=graalvm /opt/graalvm /opt/graalvm
-ENV GRAALVM_HOME=/opt/graalvm
-ENV PATH=$GRAALVM_HOME/bin:$PATH
 
 WORKDIR /workspace/app
 
-# Copiar o pom.xml e baixar as dependências para aproveitar o cache do Docker
+# Copiando o POM e baixando as dependências
 COPY pom.xml ./
 RUN mvn dependency:go-offline
 
-# Copiar o código-fonte e compilar
+# Copiando o código fonte e construindo o projeto
 COPY src ./src/
-RUN mvn -Pnative package
+RUN mvn package
 
-# Etapa de execução usando uma imagem base mínima
-FROM frolvlad/alpine-glibc:alpine-3.12
+# Fase de execução
+FROM openjdk:17-alpine3.14
+
 WORKDIR /app
-COPY --from=builder /workspace/app/target/*-runner /app/application
+
+# Copiando o JAR da fase de construção para a fase de execução
+COPY --from=builder /workspace/app/target/lanchonete-*.jar application.jar
+
 EXPOSE 8080
-CMD ["./application"]
+
+CMD ["java","-jar","application.jar"]

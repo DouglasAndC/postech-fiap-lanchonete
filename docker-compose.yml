@@ -11,6 +11,15 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+#  web:
+#    image: lanchonete:0.0.1
+#    ports:
+#      - "8080:8080"
+#    environment:
+#      DATABASE_URL: jdbc:postgresql://postgres:5432/lanchonete
 volumes:
   pgdata:
     name: pgdata-volume
+networks:
+  database:
+    driver: bridge
