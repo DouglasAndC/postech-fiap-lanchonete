@@ -26,8 +26,6 @@ class ClienteService(private val clienteRepository: ClienteRepository) {
         return clienteRepository.save(cliente.toEntity()).toDTO()
     }
 
-    fun findByCpf(cpf: String): ClienteResponseDto {
-        return clienteRepository.findByCpf(cpf)?.toDTO()
-            ?: throw BusinessException(ClienteExceptionEnum.CLIENTE_NOT_FOUND)
-    }
+    fun findByCpf(cpf: String) = clienteRepository.findByCpf(cpf)?.toDTO()
+        ?: throw BusinessException(ClienteExceptionEnum.CLIENTE_NOT_FOUND)
 }

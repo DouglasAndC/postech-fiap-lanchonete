@@ -26,9 +26,7 @@ class ClienteController(private val clienteService: ClienteService) {
     }
 
     @GetMapping("/{cpf}")
-    fun findByCpf(@PathVariable cpf: String): ResponseEntity<ClienteResponseDto>{
-        val clienteCriado = clienteService.findByCpf(cpf = cpf)
-        return ResponseEntity(clienteCriado, HttpStatus.OK)
-    }
+    fun findByCpf(@PathVariable cpf: String) = ResponseEntity(clienteService.findByCpf(cpf = cpf), HttpStatus.OK)
+
 }
 
