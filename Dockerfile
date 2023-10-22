@@ -1,39 +1,29 @@
-# syntax=docker/dockerfile:1.4
+# Stage 1: Build with Maven
+FROM maven:3.8.3-openjdk-17 AS builder
 
-FROM --platform=$BUILDPLATFORM maven:3.8.5-eclipse-temurin-17 AS builder
-WORKDIR /workdir/server
-COPY pom.xml /workdir/server/pom.xml
-RUN mvn dependency:go-offline
+# Set the working directory
+WORKDIR /usr/src/app
 
-COPY src /workdir/server/src
-RUN mvn install
+# Copy local files to the container
+COPY . .
 
-FROM builder AS dev-envs
-RUN <<EOF
-apt-get update
-apt-get install -y --no-install-recommends git
-EOF
+# Build the project with Maven
+RUN mvn package
 
-RUN <<EOF
-useradd -s /bin/bash -m vscode
-groupadd docker
-usermod -aG docker vscode
-EOF
-# install Docker tools (cli, buildx, compose)
-COPY --from=gloursdocker/docker / /
-CMD ["mvn", "spring-boot:run"]
+# Stage 2: Build native image with GraalVM
+FROM ghcr.io/graalvm/graalvm-community:17
 
-FROM builder as prepare-production
-RUN mkdir -p target/dependency
-WORKDIR /workdir/server/target/dependency
-RUN jar -xf ../*.jar
+# Set the working directory
+WORKDIR /usr/src/app
 
-FROM eclipse-temurin:17-jre-focal
+# Install Native Image tool
+RUN gu install native-image
 
-EXPOSE 8080
-VOLUME /tmp
-ARG DEPENDENCY=/workdir/server/target/dependency
-COPY --from=prepare-production ${DEPENDENCY}/BOOT-INF/lib /app/lib
-COPY --from=prepare-production ${DEPENDENCY}/META-INF /app/META-INF
-COPY --from=prepare-production ${DEPENDENCY}/BOOT-INF/classes /app
-ENTRYPOINT ["java","-cp","app:app/lib/*","com.company.project.Application"]
+# Copy the built artifacts from the builder stage
+COPY --from=builder /usr/src/app/target/lanchonete-0.0.1-SNAPSHOT.jar .
+
+# Build a native image from the JAR
+RUN native-image -H:Class=br.com.fiap.lanchonete.LanchoneteApplicationKt -jar lanchonete-0.0.1-SNAPSHOT.jar
+
+# Set the entrypoint to run the native image
+ENTRYPOINT ["./lanchonete-0.0.1-SNAPSHOT"]
