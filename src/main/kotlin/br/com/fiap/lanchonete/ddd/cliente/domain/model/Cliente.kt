@@ -1,4 +1,4 @@
-package br.com.fiap.lanchonete.cliente.domain.model
+package br.com.fiap.lanchonete.ddd.cliente.domain.model
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
