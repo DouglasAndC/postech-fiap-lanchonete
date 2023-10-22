@@ -7,5 +7,5 @@ data class ResponseErrorDto(
     val timestamp: String = OffsetDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
     val status: Int,
     val error: String,
-    val messages: List<String> = emptyList()
+    var messages: List<String> = emptyList()
 )

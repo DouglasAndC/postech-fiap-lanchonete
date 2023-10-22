@@ -17,7 +17,8 @@ class ExceptionHandler {
     @ExceptionHandler(BusinessException::class)
     fun businessExceptionHandler(businessException: BusinessException): ResponseEntity<ResponseErrorDto> {
         val responseErrorDto = businessException.exceptionEnum.getResponseError()
-        log.error("BusinessException:${responseErrorDto.error} - ${responseErrorDto.messages}")
+        responseErrorDto.messages = businessException.messages
+        log.error("BusinessException: ${responseErrorDto.error} - ${responseErrorDto.messages}")
         return ResponseEntity(responseErrorDto,HttpStatusCode.valueOf(responseErrorDto.status))
     }
 
