@@ -1,29 +1,27 @@
-# Stage 1: Build with Maven
-FROM maven:3.8.3-openjdk-17 AS builder
-
-# Set the working directory
-WORKDIR /usr/src/app
-
-# Copy local files to the container
-COPY . .
-
-# Build the project with Maven
-RUN mvn package
-
-# Stage 2: Build native image with GraalVM
-FROM ghcr.io/graalvm/graalvm-community:17
-
-# Set the working directory
-WORKDIR /usr/src/app
-
-# Install Native Image tool
+# Etapa de preparação do GraalVM
+FROM ghcr.io/graalvm/graalvm-community:17 as graalvm
 RUN gu install native-image
 
-# Copy the built artifacts from the builder stage
-COPY --from=builder /usr/src/app/target/lanchonete-0.0.1-SNAPSHOT.jar .
+# Etapa de construção usando Maven e GraalVM
+FROM maven:3.8.4-openjdk-17 as builder
+# Copie o GraalVM e o native-image para esta etapa
+COPY --from=graalvm /opt/graalvm /opt/graalvm
+ENV GRAALVM_HOME=/opt/graalvm
+ENV PATH=$GRAALVM_HOME/bin:$PATH
 
-# Build a native image from the JAR
-RUN native-image -H:Class=br.com.fiap.lanchonete.LanchoneteApplicationKt -jar lanchonete-0.0.1-SNAPSHOT.jar
+WORKDIR /workspace/app
 
-# Set the entrypoint to run the native image
-ENTRYPOINT ["./lanchonete-0.0.1-SNAPSHOT"]
+# Copiar o pom.xml e baixar as dependências para aproveitar o cache do Docker
+COPY pom.xml ./
+RUN mvn dependency:go-offline
+
+# Copiar o código-fonte e compilar
+COPY src ./src/
+RUN mvn -Pnative package
+
+# Etapa de execução usando uma imagem base mínima
+FROM frolvlad/alpine-glibc:alpine-3.12
+WORKDIR /app
+COPY --from=builder /workspace/app/target/*-runner /app/application
+EXPOSE 8080
+CMD ["./application"]

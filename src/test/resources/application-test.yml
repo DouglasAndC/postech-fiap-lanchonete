@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb/lanchonete
+    username: user
+    password: password
+    driver-class-name: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        globally_quoted_identifiers: true
+        globally_quoted_identifiers_skip_column_definitions: true
+    show-sql: true
+    generate-ddl: true
+server:
+  servlet:
+    context-path: /lanchonete

@@ -31,3 +31,4 @@ build/
 
 ### VS Code ###
 .vscode/
+/svm_err_b_*.md
