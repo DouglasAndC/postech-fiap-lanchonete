@@ -3,6 +3,7 @@ package br.com.fiap.lanchonete.ddd.cliente.infrastructure.web.controller
 import br.com.fiap.lanchonete.ddd.cliente.application.dto.request.ClienteRequestDto
 import br.com.fiap.lanchonete.ddd.cliente.application.dto.response.ClienteResponseDto
 import br.com.fiap.lanchonete.ddd.cliente.application.service.ClienteService
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -17,7 +18,7 @@ import org.springframework.web.util.UriComponentsBuilder
 @RequestMapping("api/v1/clientes")
 class ClienteController(private val clienteService: ClienteService) {
     @PostMapping
-    fun create(@RequestBody cliente: ClienteRequestDto,
+    fun create(@Valid @RequestBody cliente: ClienteRequestDto,
                uriBuilder: UriComponentsBuilder): ResponseEntity<ClienteResponseDto> {
         val clienteCreated = clienteService.create(cliente)
         val uri = uriBuilder.path("/{cpf}").buildAndExpand(clienteCreated.cpf).toUri();
