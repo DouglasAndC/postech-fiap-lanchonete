@@ -4,13 +4,13 @@ services:
   postgres:
     image: postgres:13.3   # ou a versão que preferir
     environment:
-      POSTGRES_DB: mydatabase   # Nome da base de dados que será criada automaticamente
+      POSTGRES_DB: lanchonete   # Nome da base de dados que será criada automaticamente
       POSTGRES_USER: user       # Nome do usuário
       POSTGRES_PASSWORD: password  # Senha do usuário
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-
 volumes:
   pgdata:
+    name: pgdata-volume
