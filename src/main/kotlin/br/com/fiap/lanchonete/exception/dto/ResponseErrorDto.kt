@@ -1,4 +1,4 @@
-package br.com.fiap.lanchonete.exception
+package br.com.fiap.lanchonete.exception.dto
 
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
