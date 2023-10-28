@@ -33,7 +33,7 @@ class ProdutoController(
         return ResponseEntity.created(uri).build()
     }
 
-    @GetMapping(" /{id}")
+    @GetMapping("/{id}")
     fun getProduto(@PathVariable(name = "id") id: Long): ResponseEntity<ProdutoResponse> =
             ResponseEntity(produtoApplicationService.get(id), HttpStatus.OK)
 
