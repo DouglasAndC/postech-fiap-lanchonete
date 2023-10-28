@@ -2,7 +2,7 @@ package br.com.fiap.lanchonete.ddd.cliente.infrastructure.web.controller
 
 import br.com.fiap.lanchonete.ddd.cliente.application.dto.request.ClienteRequestDto
 import br.com.fiap.lanchonete.ddd.cliente.application.dto.response.ClienteResponseDto
-import br.com.fiap.lanchonete.ddd.cliente.application.service.ClienteService
+import br.com.fiap.lanchonete.ddd.cliente.application.service.ClienteApplicationService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -15,18 +15,19 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.util.UriComponentsBuilder
 
 @RestController
-@RequestMapping("api/v1/clientes")
-class ClienteController(private val clienteService: ClienteService) {
+@RequestMapping("/api/v1/clientes")
+class ClienteController(private val clienteService: ClienteApplicationService) {
     @PostMapping
     fun create(@Valid @RequestBody cliente: ClienteRequestDto,
                uriBuilder: UriComponentsBuilder): ResponseEntity<ClienteResponseDto> {
         val clienteCreated = clienteService.create(cliente)
-        val uri = uriBuilder.path("/{cpf}").buildAndExpand(clienteCreated.cpf).toUri();
+        val uri = uriBuilder.path("/api/v1/clientes/{cpf}").buildAndExpand(clienteCreated.cpf).toUri();
         return ResponseEntity.created(uri).body(clienteCreated);
     }
 
     @GetMapping("/{cpf}")
-    fun findByCpf(@PathVariable cpf: String) = ResponseEntity(clienteService.findByCpf(cpf = cpf), HttpStatus.OK)
+    fun findByCpf(@PathVariable(required = true) cpf: String) =
+        ResponseEntity(clienteService.findByCpf(cpf = cpf), HttpStatus.OK)
 
 }
 

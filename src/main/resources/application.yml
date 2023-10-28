@@ -17,3 +17,8 @@ spring:
 server:
   servlet:
     context-path: /lanchonete
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type: TRACE
