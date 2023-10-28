@@ -17,7 +17,7 @@ class ClienteApplicationServiceTest {
     private val clienteApplicationService = ClienteApplicationService(clienteDomainService)
 
     @Test
-    fun `test create`() {
+    fun `teste criacao do cliente na layer application`() {
         val clienteRequestDto = ClienteRequestDto(
             cpf = "123.456.789-09",
             email = "email@email.com",
@@ -36,7 +36,7 @@ class ClienteApplicationServiceTest {
     }
 
     @Test
-    fun `test findByCpf`() {
+    fun `teste busca por cpf do cliente na layer application`() {
         val cpf = "123.456.789-09"
         val cliente = Cliente(
             id = 1,
