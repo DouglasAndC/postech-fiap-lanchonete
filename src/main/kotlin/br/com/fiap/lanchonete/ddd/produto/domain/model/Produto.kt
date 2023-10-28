@@ -1,11 +1,13 @@
 package br.com.fiap.lanchonete.ddd.produto.domain.model
 
+import br.com.fiap.lanchonete.ddd.produto.domain.model.enums.CategoriaEnum
 import jakarta.persistence.ElementCollection
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.SequenceGenerator
+import java.math.BigDecimal
 
 
 @Entity
@@ -17,8 +19,9 @@ data class Produto(
         @Id
         val id: Long = 1,
         var nome: String = "",
-        var categoria: String = "",
+        var categoria: CategoriaEnum,
         var descricao: String = "",
+        var preco: BigDecimal,
         @ElementCollection
         var imagens: List<String> = emptyList()
 )

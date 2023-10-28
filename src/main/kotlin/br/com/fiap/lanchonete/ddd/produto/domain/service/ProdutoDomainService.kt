@@ -1,43 +1,34 @@
-package br.com.fiap.lanchonete.ddd.produto.application.service
+package br.com.fiap.lanchonete.ddd.produto.domain.service
 
-import br.com.fiap.lanchonete.ddd.produto.application.dto.request.ProdutoRequest
+import br.com.fiap.lanchonete.ddd.produto.domain.model.Produto
+import br.com.fiap.lanchonete.ddd.produto.domain.model.enums.CategoriaEnum
 import br.com.fiap.lanchonete.ddd.produto.domain.model.exception.ProdutoExceptionEnum
-import br.com.fiap.lanchonete.ddd.produto.domain.model.extensions.toDTO
-import br.com.fiap.lanchonete.ddd.produto.domain.model.extensions.toEntity
 import br.com.fiap.lanchonete.ddd.produto.domain.repository.ProdutoRepository
 import br.com.fiap.lanchonete.exception.BusinessException
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
-class ProdutoService(
+class ProdutoDomainService(
         private val produtoRepository: ProdutoRepository
 ) {
-
     fun get(id: Long) =
-            produtoRepository.findProdutoById(id)?.toDTO()
+            produtoRepository.findProdutoById(id)
                     ?: throw BusinessException(ProdutoExceptionEnum.PRODUTO_NOT_FOUND)
 
-
-    fun create(produtoRequest: ProdutoRequest) = produtoRepository.save(produtoRequest.toEntity()).toDTO()
+    fun create(produto: Produto) = produtoRepository.save(produto)
 
     fun delete(id: Long) = produtoRepository.findProdutoById(id)?.let {
         produtoRepository.delete(it)
     } ?: throw BusinessException(ProdutoExceptionEnum.PRODUTO_NOT_FOUND)
 
-    fun put(id: Long, produtoRequest: ProdutoRequest) =
+    fun put(id: Long, produto: Produto) =
          produtoRepository.findProdutoById(id)?.let {
-            produtoRepository.save(
-                    it.copy(nome = produtoRequest.nome, categoria = produtoRequest.categoria, descricao = produtoRequest.descricao, imagens = produtoRequest.imagens))
-                    .toDTO()
+            produtoRepository.save(produto)
         } ?: throw BusinessException(ProdutoExceptionEnum.PRODUTO_NOT_FOUND)
 
-
-
-    fun getByCategoria(categoria: String, pageable: Pageable) =
+    fun getByCategoria(categoria: CategoriaEnum, pageable: Pageable) =
             produtoRepository.findProdutoByCategoria(categoria, pageable).also {
                 if (it.isEmpty) throw BusinessException(ProdutoExceptionEnum.CATEGORIA_NOT_FOUND)
-            }.map {
-                it.toDTO()
             }
 }
