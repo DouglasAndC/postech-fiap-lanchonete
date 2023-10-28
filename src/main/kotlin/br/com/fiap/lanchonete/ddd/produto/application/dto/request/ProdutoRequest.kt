@@ -1,15 +1,15 @@
-package br.com.fiap.lanchonete.produto.application.dto.request
+package br.com.fiap.lanchonete.ddd.produto.application.dto.request
 
 import jakarta.validation.constraints.NotBlank
 
 
 class ProdutoRequest(
-        @NotBlank
+        @field:NotBlank
         var nome: String,
-        @NotBlank
+        @field:NotBlank
         var categoria: String,
-        @NotBlank
+        @field:NotBlank
         var descricao: String,
-        @NotBlank
+        @field:NotBlank
         var imagens: MutableList<String>
 )
