@@ -2,7 +2,8 @@ package br.com.fiap.lanchonete.ddd.produto.infrastructure.web.controller
 
 import br.com.fiap.lanchonete.ddd.produto.application.dto.request.ProdutoRequest
 import br.com.fiap.lanchonete.ddd.produto.application.dto.response.ProdutoResponse
-import br.com.fiap.lanchonete.ddd.produto.application.service.ProdutoService
+import br.com.fiap.lanchonete.ddd.produto.application.service.ProdutoApplicationService
+import br.com.fiap.lanchonete.ddd.produto.domain.model.enums.CategoriaEnum
 import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -19,38 +20,37 @@ import org.springframework.web.util.UriComponentsBuilder
 
 @Controller("/produto")
 class ProdutoController(
-        private val produtoService: ProdutoService,
+        private val produtoApplicationService: ProdutoApplicationService,
 ) {
 
     @PostMapping
     fun create(@Valid @RequestBody produtoRequest: ProdutoRequest, uriBuilder: UriComponentsBuilder): ResponseEntity<ProdutoResponse>{
 
-        val produtoResponse = produtoService.create(produtoRequest)
+        val produtoResponse = produtoApplicationService.create(produtoRequest)
 
         val uri = uriBuilder.path("/{id}").buildAndExpand(produtoResponse.id).toUri()
 
         return ResponseEntity.created(uri).build()
     }
 
-
     @GetMapping(" /{id}")
     fun getProduto(@PathVariable(name = "id") id: Long): ResponseEntity<ProdutoResponse> =
-            ResponseEntity(produtoService.get(id), HttpStatus.OK)
+            ResponseEntity(produtoApplicationService.get(id), HttpStatus.OK)
 
     @PutMapping("/{id}")
     fun editProduto(@PathVariable(name = "id") id: Long, @Valid @RequestBody produtoRequest: ProdutoRequest): ResponseEntity<ProdutoResponse> =
-            ResponseEntity(produtoService.put(id, produtoRequest), HttpStatus.OK)
+            ResponseEntity(produtoApplicationService.put(id, produtoRequest), HttpStatus.OK)
 
     @DeleteMapping("/{id}")
     fun delete(@PathVariable(name = "id") id: Long): ResponseEntity<Unit> {
 
-        produtoService.delete(id)
+        produtoApplicationService.delete(id)
 
         return ResponseEntity.noContent().build()
     }
 
     @GetMapping("/{categoria}/categoria")
-    fun getByCategoria(@PathVariable(name = "categoria") categoria: String, pageable: Pageable): ResponseEntity<Page<ProdutoResponse>> =
-        ResponseEntity(produtoService.getByCategoria(categoria, pageable), HttpStatus.OK)
+    fun getByCategoria(@PathVariable(name = "categoria") categoria: CategoriaEnum, pageable: Pageable): ResponseEntity<Page<ProdutoResponse>> =
+        ResponseEntity(produtoApplicationService.getByCategoria(categoria, pageable), HttpStatus.OK)
 
 }
