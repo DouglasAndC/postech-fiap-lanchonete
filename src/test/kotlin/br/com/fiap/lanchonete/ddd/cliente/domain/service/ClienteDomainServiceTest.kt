@@ -32,7 +32,7 @@ class ClienteDomainServiceTest {
     }
 
     @Test
-    fun `should create cliente when cpf and email are not in use`() {
+    fun `Deve criar cliente quando CPF e e-mail nao estao em uso`() {
         `when`(cliente.cpf?.let { clienteRepository.existsByCpf(it) }).thenReturn(false)
         `when`(cliente.email?.let { clienteRepository.existsByEmail(it) }).thenReturn(false)
         `when`(clienteRepository.save(cliente)).thenReturn(cliente)
@@ -44,7 +44,7 @@ class ClienteDomainServiceTest {
     }
 
     @Test
-    fun `should throw BusinessException when cpf is already in use`() {
+    fun `Deve lancar BusinessException quando cpf ja esta em uso`() {
         `when`(cliente.cpf?.let { clienteRepository.existsByCpf(it) }).thenReturn(true)
 
         val exception = assertThrows(BusinessException::class.java) {
@@ -55,7 +55,7 @@ class ClienteDomainServiceTest {
     }
 
     @Test
-    fun `should throw BusinessException when email is already in use`() {
+    fun `Deve lancar BusinessException quando email ja estao`() {
         `when`(cliente.cpf?.let { clienteRepository.existsByCpf(it) }).thenReturn(false)
         `when`(cliente.email?.let { clienteRepository.existsByEmail(it) }).thenReturn(true)
 
@@ -67,7 +67,7 @@ class ClienteDomainServiceTest {
     }
 
     @Test
-    fun `should find cliente by cpf`() {
+    fun `Deve buscar um cliente por cpf`() {
         val cpf = "123.456.789-09"
         `when`(clienteRepository.findByCpf(cpf)).thenReturn(cliente)
 
@@ -77,7 +77,7 @@ class ClienteDomainServiceTest {
     }
 
     @Test
-    fun `should throw BusinessException when cliente not found by cpf`() {
+    fun `Deve lancar BusinessException quando cliente nao for encontrado por cpf`() {
         val cpf = "987.654.321-09"
         `when`(clienteRepository.findByCpf(cpf)).thenReturn(null)
 
