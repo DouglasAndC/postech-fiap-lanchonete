@@ -1,5 +1,7 @@
-package br.com.fiap.lanchonete.exception
+package br.com.fiap.lanchonete.exception.handler
 
+import br.com.fiap.lanchonete.exception.BusinessException
+import br.com.fiap.lanchonete.exception.dto.ResponseErrorDto
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -17,7 +19,8 @@ class ExceptionHandler {
     @ExceptionHandler(BusinessException::class)
     fun businessExceptionHandler(businessException: BusinessException): ResponseEntity<ResponseErrorDto> {
         val responseErrorDto = businessException.exceptionEnum.getResponseError()
-        log.error("BusinessException:${responseErrorDto.error} - ${responseErrorDto.messages}")
+        responseErrorDto.messages = businessException.messages
+        log.error("BusinessException: ${responseErrorDto.error} - ${responseErrorDto.messages}")
         return ResponseEntity(responseErrorDto,HttpStatusCode.valueOf(responseErrorDto.status))
     }
 
@@ -27,12 +30,22 @@ class ExceptionHandler {
             "${error.field}: ${error.defaultMessage}"
         }
 
-        val responseBody =ResponseErrorDto(
+        val responseBody = ResponseErrorDto(
             status = HttpStatus.BAD_REQUEST.value(),
             error = HttpStatus.BAD_REQUEST.reasonPhrase,
             messages = errors)
 
         return ResponseEntity(responseBody, HttpStatus.BAD_REQUEST)
+    }
+
+    @ExceptionHandler(Exception::class)
+    fun unexpectedException(unexpectedException: Exception): ResponseEntity<ResponseErrorDto> {
+        val responseBody = ResponseErrorDto(
+            status = HttpStatus.INTERNAL_SERVER_ERROR.value(),
+            error = HttpStatus.INTERNAL_SERVER_ERROR.reasonPhrase,
+            messages = listOf(unexpectedException.message ?: "An error occurred"))
+        log.error("UnexpectedException: ${unexpectedException.cause} - ${unexpectedException.message}")
+        return ResponseEntity(responseBody, HttpStatus.INTERNAL_SERVER_ERROR)
     }
 
 }

@@ -13,7 +13,7 @@ data class Cliente(
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cliente_id_seq")
     @SequenceGenerator(name = "cliente_id_seq", sequenceName = "cliente_id_seq", allocationSize = 1)
-    val id: Long = 1,
+    val id: Long?,
     @Column(name = "CPF", unique = true)
     val cpf: String?,
     @Column(name = "NOME")
