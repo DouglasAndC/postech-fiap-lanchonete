@@ -1,5 +1,7 @@
-package br.com.fiap.lanchonete.exception
+package br.com.fiap.lanchonete.exception.handler
 
+import br.com.fiap.lanchonete.exception.BusinessException
+import br.com.fiap.lanchonete.exception.dto.ResponseErrorDto
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -28,7 +30,7 @@ class ExceptionHandler {
             "${error.field}: ${error.defaultMessage}"
         }
 
-        val responseBody =ResponseErrorDto(
+        val responseBody = ResponseErrorDto(
             status = HttpStatus.BAD_REQUEST.value(),
             error = HttpStatus.BAD_REQUEST.reasonPhrase,
             messages = errors)
