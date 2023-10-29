@@ -6,6 +6,4 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface ProdutoJPARepository : ProdutoRepository, JpaRepository<Produto, Long> {
-
-}
+interface ProdutoJPARepository : ProdutoRepository, JpaRepository<Produto, Long>

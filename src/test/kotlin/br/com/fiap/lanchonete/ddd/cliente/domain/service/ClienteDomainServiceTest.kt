@@ -6,7 +6,6 @@ import br.com.fiap.lanchonete.ddd.cliente.domain.repository.ClienteRepository
 import br.com.fiap.lanchonete.exception.BusinessException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
@@ -24,12 +23,7 @@ class ClienteDomainServiceTest {
     @InjectMocks
     lateinit var clienteDomainService: ClienteDomainService
 
-    private lateinit var cliente: Cliente
-
-    @BeforeEach
-    fun setUp() {
-        cliente = Cliente(1L, "123.456.789-09", "Cliente Teste", "cliente@teste.com")
-    }
+    private val cliente = Cliente(1L, "123.456.789-09", "Cliente Teste", "cliente@teste.com")
 
     @Test
     fun `Deve criar cliente quando CPF e e-mail nao estao em uso`() {
