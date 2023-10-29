@@ -39,8 +39,7 @@ class ProdutoApplicationServiceTest {
             nome = produto.nome,
             descricao = produto.descricao,
             categoria = produto.categoria,
-            preco = produto.preco,
-            imagens = produto.imagens
+            preco = produto.preco
     )
 
     @Test
@@ -96,6 +95,20 @@ class ProdutoApplicationServiceTest {
         val resultado = produtoApplicationService.getByCategoria(CategoriaEnum.LANCHE, pageable)
 
         assertEquals(2, resultado.totalElements)
+    }
+
+    @Test
+    fun `deve chamar alterarImagem em ProdutoDomainService e converter para DTO`() {
+
+
+        val imagens = listOf("imagem1.jpg", "imagem2.jpg")
+        val produtoAlterado = produto.copy(imagens = imagens)
+
+        `when`(produtoDomainService.alterarImagem(produto.id, imagens)).thenReturn(produtoAlterado)
+
+        val resultado = produtoApplicationService.alterarImagem(produto.id, imagens)
+
+        assertEquals(resultado.imagens, imagens)
     }
 
     private fun assertsProduto(response: ProdutoResponse) {

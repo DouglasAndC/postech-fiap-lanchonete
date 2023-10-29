@@ -25,4 +25,8 @@ class ProdutoApplicationService(private val produtoDomainService: ProdutoDomainS
            produtoDomainService.getByCategoria(categoria,pageable).map {
                it.toDTO()
            }
+
+    fun alterarImagem(id: Long, imagens: List<String>) =
+            produtoDomainService.alterarImagem(id,imagens).toDTO()
+
 }

@@ -1,5 +1,6 @@
 package br.com.fiap.lanchonete.ddd.produto.infrastructure.web.controller
 
+import br.com.fiap.lanchonete.ddd.produto.application.dto.request.ImagemRequest
 import br.com.fiap.lanchonete.ddd.produto.application.dto.request.ProdutoRequest
 import br.com.fiap.lanchonete.ddd.produto.application.dto.response.ProdutoResponse
 import br.com.fiap.lanchonete.ddd.produto.application.service.ProdutoApplicationService
@@ -9,16 +10,17 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.util.UriComponentsBuilder
 
-@Controller("/produto")
+@RestController("/produto")
 class ProdutoController(
         private val produtoApplicationService: ProdutoApplicationService,
 ) {
@@ -28,7 +30,7 @@ class ProdutoController(
 
         val produtoResponse = produtoApplicationService.create(produtoRequest)
 
-        val uri = uriBuilder.path("/{id}").buildAndExpand(produtoResponse.id).toUri()
+        val uri = uriBuilder.path("/lanchonete/api/v1/produto/{id}").buildAndExpand(produtoResponse.id).toUri()
 
         return ResponseEntity.created(uri).build()
     }
@@ -52,5 +54,9 @@ class ProdutoController(
     @GetMapping("/{categoria}/categoria")
     fun getByCategoria(@PathVariable(name = "categoria") categoria: CategoriaEnum, pageable: Pageable): ResponseEntity<Page<ProdutoResponse>> =
         ResponseEntity(produtoApplicationService.getByCategoria(categoria, pageable), HttpStatus.OK)
+
+    @PatchMapping("/{id}")
+    fun alterarImagem(@PathVariable(name = "id") id: Long, @Valid @RequestBody imagensRequest: ImagemRequest): ResponseEntity<ProdutoResponse> =
+            ResponseEntity(produtoApplicationService.alterarImagem(id,imagensRequest.imagens), HttpStatus.OK)
 
 }
