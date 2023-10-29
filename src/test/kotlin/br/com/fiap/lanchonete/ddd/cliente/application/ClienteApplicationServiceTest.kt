@@ -1,7 +1,7 @@
 package br.com.fiap.lanchonete.ddd.cliente.application
 
-import br.com.fiap.lanchonete.ddd.cliente.application.dto.request.ClienteRequestDto
-import br.com.fiap.lanchonete.ddd.cliente.application.dto.response.ClienteResponseDto
+import br.com.fiap.lanchonete.ddd.cliente.application.dto.request.ClienteRequest
+import br.com.fiap.lanchonete.ddd.cliente.application.dto.response.ClienteResponse
 import br.com.fiap.lanchonete.ddd.cliente.application.service.ClienteApplicationService
 import br.com.fiap.lanchonete.ddd.cliente.domain.model.Cliente
 import br.com.fiap.lanchonete.ddd.cliente.domain.model.extension.toEntity
@@ -18,12 +18,12 @@ class ClienteApplicationServiceTest {
 
     @Test
     fun `teste criacao do cliente na layer application`() {
-        val clienteRequestDto = ClienteRequestDto(
+        val clienteRequestDto = ClienteRequest(
             cpf = "123.456.789-09",
             email = "email@email.com",
             nome = "Jonh Doe")
         val cliente = clienteRequestDto.toEntity()
-        val clienteResponseDto = ClienteResponseDto(
+        val clienteResponse = ClienteResponse(
             cpf = "123.456.789-09",
             email = "email@email.com",
             nome = "Jonh Doe")
@@ -32,7 +32,7 @@ class ClienteApplicationServiceTest {
 
         val result = clienteApplicationService.create(clienteRequestDto)
 
-        assertEquals(clienteResponseDto, result)
+        assertEquals(clienteResponse, result)
     }
 
     @Test
@@ -43,7 +43,7 @@ class ClienteApplicationServiceTest {
             cpf = "123.456.789-09",
             email = "email@email.com",
             nome = "Jonh Doe")
-        val clienteResponseDto = ClienteResponseDto(cpf = "123.456.789-09",
+        val clienteResponse = ClienteResponse(cpf = "123.456.789-09",
             email = "email@email.com",
             nome = "Jonh Doe")
 
@@ -51,6 +51,6 @@ class ClienteApplicationServiceTest {
 
         val result = clienteApplicationService.findByCpf(cpf)
 
-        assertEquals(clienteResponseDto, result)
+        assertEquals(clienteResponse, result)
     }
 }
