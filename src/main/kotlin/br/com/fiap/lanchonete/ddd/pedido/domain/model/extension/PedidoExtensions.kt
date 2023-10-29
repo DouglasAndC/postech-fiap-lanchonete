@@ -18,16 +18,17 @@ fun Pedido.toDTO() = PedidoResponse(
     produtos = this.produtos.map { it.toDTO() }
 )
 
-fun PedidoProduto.toDTO() = PedidoProdutoResponse(
-    id = this.id,
-    quantidade = this.quantidade,
-    produto = this.produto?.toDTO()
-)
 fun PedidoRequest.toEntity() = Pedido(
     id = null,
     status = null,
     cliente = this.cliente?.toEntity(),
     produtos = this.produtos.map { it.toEntity() }.toMutableList()
+)
+
+fun PedidoProduto.toDTO() = PedidoProdutoResponse(
+    id = this.id,
+    quantidade = this.quantidade,
+    produto = this.produto?.toDTO()
 )
 
 fun PedidoProdutoRequest.toEntity() = PedidoProduto(
