@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.util.UriComponentsBuilder
 
 @RestController
-@RequestMapping("/api/v1/clientes")
+@RequestMapping("/clientes")
 class ClienteController(private val clienteService: ClienteApplicationService) {
     @PostMapping
     fun create(@Valid @RequestBody cliente: ClienteRequestDto,
                uriBuilder: UriComponentsBuilder): ResponseEntity<ClienteResponseDto> {
         val clienteCreated = clienteService.create(cliente)
-        val uri = uriBuilder.path("/api/v1/clientes/{cpf}").buildAndExpand(clienteCreated.cpf).toUri();
-        return ResponseEntity.created(uri).body(clienteCreated);
+        val uri = uriBuilder.path("/api/v1/clientes/{cpf}").buildAndExpand(clienteCreated.cpf).toUri()
+        return ResponseEntity.created(uri).body(clienteCreated)
     }
 
     @GetMapping("/{cpf}")
