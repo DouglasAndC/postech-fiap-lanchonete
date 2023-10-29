@@ -31,4 +31,11 @@ class ProdutoDomainService(
             produtoRepository.findProdutoByCategoria(categoria, pageable).also {
                 if (it.isEmpty) throw BusinessException(ProdutoExceptionEnum.CATEGORIA_NOT_FOUND)
             }
+
+    fun alterarImagem(id: Long, imagens: List<String>): Produto =
+        produtoRepository.findProdutoById(id)?.let {
+            it.imagens = imagens
+            produtoRepository.save(it)
+        } ?: throw BusinessException(ProdutoExceptionEnum.PRODUTO_NOT_FOUND)
+
 }

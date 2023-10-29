@@ -16,7 +16,7 @@ spring:
     generate-ddl: true
 server:
   servlet:
-    context-path: /lanchonete
+    context-path: /lanchonete/api/v1
 
 logging:
   level:

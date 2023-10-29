@@ -134,12 +134,37 @@ class ProdutoDomainServiceTest {
         }
     }
 
+    @Test
+    fun `deve alterar imagens do produto existente`() {
+
+        val imagens = listOf("imagem1", "imagem2")
+
+        `when`(produtoRepository.findProdutoById(produto.id)).thenReturn(produto)
+        `when`(produtoRepository.save(produto)).thenReturn(produto.copy(imagens = imagens))
+
+        val resultado = produtoDomainService.alterarImagem(produto.id, imagens)
+
+        assertsProduto(resultado)
+    }
+
+    @Test
+    fun `deve lancar excecao ao tentar alterar imagens de um produto inexistente`() {
+
+        val imagens = listOf("imagem1", "imagem2")
+
+        `when`(produtoRepository.findProdutoById(produto.id)).thenReturn(null)
+
+        assertThrows<BusinessException> {
+            produtoDomainService.alterarImagem(produto.id, imagens)
+        }
+    }
+
     private fun assertsProduto(response: Produto) {
         assertEquals(response.id, produto.id)
         assertEquals(response.categoria, produto.categoria)
         assertEquals(response.nome, produto.nome)
         assertEquals(response.descricao, produto.descricao)
-        assertEquals(produto.preco, response.preco)
+        assertEquals(response.preco, produto.preco)
         assertEquals(response.imagens, produto.imagens)
     }
 }

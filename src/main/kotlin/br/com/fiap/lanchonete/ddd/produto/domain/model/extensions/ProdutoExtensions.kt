@@ -6,4 +6,4 @@ import br.com.fiap.lanchonete.ddd.produto.domain.model.Produto
 
 fun Produto.toDTO(): ProdutoResponse = ProdutoResponse(id = id,nome = nome, categoria = categoria, descricao = descricao,preco = preco, imagens = imagens)
 
-fun ProdutoRequest.toEntity(): Produto = Produto(nome = nome, categoria = categoria, descricao = descricao, preco = preco, imagens = imagens)
+fun ProdutoRequest.toEntity(): Produto = Produto(nome = nome, categoria = categoria, descricao = descricao, preco = preco)

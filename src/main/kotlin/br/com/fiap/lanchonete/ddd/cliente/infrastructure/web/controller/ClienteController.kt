@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.util.UriComponentsBuilder
 
 @RestController
-@RequestMapping("/api/v1/clientes")
+@RequestMapping("/clientes")
 class ClienteController(private val clienteService: ClienteApplicationService) {
     @PostMapping
     fun create(@Valid @RequestBody cliente: ClienteRequest,
