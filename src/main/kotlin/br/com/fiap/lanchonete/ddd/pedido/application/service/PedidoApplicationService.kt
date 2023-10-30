@@ -35,4 +35,7 @@ class PedidoApplicationService(private val pedidoDomainService: PedidoDomainServ
         return PageImpl(pedidoDtos, pageable, page.totalElements)
     }
 
+    fun checkout(id: Long): PedidoResponse =
+            pedidoDomainService.checkout(id).toDTO()
+
 }
