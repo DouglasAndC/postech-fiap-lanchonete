@@ -4,8 +4,8 @@ import br.com.fiap.lanchonete.ddd.cliente.domain.model.extension.toEntity
 import br.com.fiap.lanchonete.ddd.cliente.domain.service.ClienteDomainService
 import br.com.fiap.lanchonete.ddd.pedido.application.dto.request.PedidoRequest
 import br.com.fiap.lanchonete.ddd.pedido.application.dto.response.PedidoResponse
+import br.com.fiap.lanchonete.ddd.pedido.domain.model.Combo
 import br.com.fiap.lanchonete.ddd.pedido.domain.model.Pedido
-import br.com.fiap.lanchonete.ddd.pedido.domain.model.PedidoProduto
 import br.com.fiap.lanchonete.ddd.pedido.domain.model.enums.StatusPedido
 import br.com.fiap.lanchonete.ddd.pedido.domain.model.extension.toDTO
 import br.com.fiap.lanchonete.ddd.pedido.domain.service.PedidoDomainService
@@ -28,7 +28,7 @@ class PedidoApplicationService(private val pedidoDomainService: PedidoDomainServ
             id = null,
             status = StatusPedido.RECEBIDO,
             cliente = pedidoRequest.cliente?.toEntity(),
-            produtos = emptyList<PedidoProduto>().toMutableList()
+            produtos = emptyList<Combo>().toMutableList()
         )
 
         pedidoRequest.produtos.forEach{

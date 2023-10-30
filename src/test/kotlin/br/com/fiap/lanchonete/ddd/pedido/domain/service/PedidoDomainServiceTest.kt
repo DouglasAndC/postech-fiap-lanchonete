@@ -1,8 +1,8 @@
 package br.com.fiap.lanchonete.ddd.pedido.domain.service
 
 import br.com.fiap.lanchonete.ddd.cliente.domain.model.Cliente
+import br.com.fiap.lanchonete.ddd.pedido.domain.model.Combo
 import br.com.fiap.lanchonete.ddd.pedido.domain.model.Pedido
-import br.com.fiap.lanchonete.ddd.pedido.domain.model.PedidoProduto
 import br.com.fiap.lanchonete.ddd.pedido.domain.model.enums.StatusPedido
 import br.com.fiap.lanchonete.ddd.pedido.domain.repository.PedidoRepository
 import br.com.fiap.lanchonete.exception.BusinessException
@@ -26,7 +26,7 @@ class PedidoDomainServiceTest {
 
     private val cliente = Cliente(1L, "123.456.789-09", "Cliente Teste", "cliente@teste.com")
 
-    private val pedido = Pedido(1L, StatusPedido.RECEBIDO ,cliente, emptyList<PedidoProduto>().toMutableList())
+    private val pedido = Pedido(1L, StatusPedido.RECEBIDO ,cliente, emptyList<Combo>().toMutableList())
 
     @Test
     fun `deve alterar status para EM_PREPARACAO se o pedido estiver RECEBIDO`() {

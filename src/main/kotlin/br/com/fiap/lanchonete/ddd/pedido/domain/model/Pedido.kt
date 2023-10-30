@@ -29,8 +29,8 @@ data class Pedido(
     val cliente: Cliente?,
         @OneToMany(mappedBy = "pedido", cascade = [CascadeType.ALL], orphanRemoval = true)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    var produtos: MutableList<PedidoProduto> = mutableListOf(),
-    @Column(precision = 15, scale = 2)
+    var produtos: MutableList<Combo> = mutableListOf(),
+        @Column(precision = 15, scale = 2)
     var precoTotal: BigDecimal = BigDecimal.ZERO
 ){
     fun addProduto(produto: Produto) {
@@ -39,8 +39,8 @@ data class Pedido(
         if (pedidoProdutoExistente != null) {
             pedidoProdutoExistente.incrementarQuantidade()
         } else {
-            val novoPedidoProduto = PedidoProduto(pedido = this, produto = produto)
-            produtos.add(novoPedidoProduto)
+            val novoCombo = Combo(pedido = this, produto = produto)
+            produtos.add(novoCombo)
         }
 
         recalcularPrecoTotal()

@@ -12,10 +12,10 @@ import jakarta.persistence.SequenceGenerator
 import java.math.BigDecimal
 
 @Entity
-data class PedidoProduto(
+data class Combo(
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pedido_produto_id_seq")
-    @SequenceGenerator(name = "pedido_produto_id_seq", sequenceName = "pedido_produto_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "combo_id_seq")
+    @SequenceGenerator(name = "combo_id_seq", sequenceName = "combo_id_seq", allocationSize = 1)
     var id: Long? = null,
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "produto_id")

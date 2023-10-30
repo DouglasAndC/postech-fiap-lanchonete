@@ -7,4 +7,4 @@ data class PedidoResponse(
     val id: Long?,
     val status: StatusPedido?,
     val cliente: ClienteResponse?,
-    val produtos: List<PedidoProdutoResponse>)
+    val produtos: List<ComboResponse>)
