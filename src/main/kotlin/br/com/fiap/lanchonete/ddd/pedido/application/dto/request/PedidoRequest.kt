@@ -6,4 +6,4 @@ import jakarta.validation.constraints.NotNull
 
 data class PedidoRequest(
     val cliente: ClienteRequest?,
-    @field:NotNull @field:NotEmpty val produtos: List<PedidoProdutoRequest>)
+    @field:NotNull @field:NotEmpty val produtos: List<Long>)

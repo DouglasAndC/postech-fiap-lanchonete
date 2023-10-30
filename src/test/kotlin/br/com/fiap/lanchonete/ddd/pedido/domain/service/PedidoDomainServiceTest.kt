@@ -5,8 +5,6 @@ import br.com.fiap.lanchonete.ddd.pedido.domain.model.Pedido
 import br.com.fiap.lanchonete.ddd.pedido.domain.model.PedidoProduto
 import br.com.fiap.lanchonete.ddd.pedido.domain.model.enums.StatusPedido
 import br.com.fiap.lanchonete.ddd.pedido.domain.repository.PedidoRepository
-import br.com.fiap.lanchonete.ddd.produto.domain.model.Produto
-import br.com.fiap.lanchonete.ddd.produto.domain.model.enums.CategoriaEnum
 import br.com.fiap.lanchonete.exception.BusinessException
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -16,7 +14,6 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
-import java.math.BigDecimal
 
 @ExtendWith(MockitoExtension::class)
 class PedidoDomainServiceTest {
@@ -26,15 +23,6 @@ class PedidoDomainServiceTest {
 
     @Mock
     lateinit var pedidoRepository: PedidoRepository
-
-    val produto: Produto = Produto(
-            id = 1L,
-            nome = "Hamburguer",
-            descricao = "hamburguer de carne 180g",
-            categoria = CategoriaEnum.LANCHE,
-            preco = BigDecimal.TEN,
-            imagens = emptyList()
-    )
 
     private val cliente = Cliente(1L, "123.456.789-09", "Cliente Teste", "cliente@teste.com")
 
