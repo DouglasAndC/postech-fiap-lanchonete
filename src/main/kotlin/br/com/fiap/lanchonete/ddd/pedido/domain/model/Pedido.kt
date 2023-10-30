@@ -16,15 +16,15 @@ import org.hibernate.annotations.OnDeleteAction
 
 @Entity
 data class Pedido(
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pedido_id_seq")
     @SequenceGenerator(name = "pedido_id_seq", sequenceName = "pedido_id_seq", allocationSize = 1)
-    var id: Long?,
-    val status: StatusPedido?,
-    @ManyToOne
+    var id: Long? = null,
+        var status: StatusPedido?,
+        @ManyToOne
     @JoinColumn(name = "cliente_id")
     val cliente: Cliente?,
-    @OneToMany(mappedBy = "pedido", cascade = [CascadeType.ALL], orphanRemoval = true)
+        @OneToMany(mappedBy = "pedido", cascade = [CascadeType.ALL], orphanRemoval = true)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var produtos: MutableList<PedidoProduto> = mutableListOf()
 )

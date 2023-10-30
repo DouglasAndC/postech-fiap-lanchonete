@@ -9,6 +9,8 @@ import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -30,6 +32,11 @@ class PedidoController(private val pedidoApplicationService: PedidoApplicationSe
     @GetMapping
     fun getAll(pageable: Pageable): ResponseEntity<Page<PedidoResponse>> =
         ResponseEntity(pedidoApplicationService.getAll(pageable), HttpStatus.OK)
+
+    @PatchMapping
+    fun checkout(@PathVariable(name = "id") id: Long): ResponseEntity<PedidoResponse> =
+            ResponseEntity(pedidoApplicationService.checkout(id), HttpStatus.OK)
+
 
 }
 

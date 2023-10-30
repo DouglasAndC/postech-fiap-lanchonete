@@ -19,7 +19,6 @@ fun Pedido.toDTO() = PedidoResponse(
 )
 
 fun PedidoRequest.toEntity() = Pedido(
-    id = null,
     status = null,
     cliente = this.cliente?.toEntity(),
     produtos = this.produtos.map { it.toEntity() }.toMutableList()

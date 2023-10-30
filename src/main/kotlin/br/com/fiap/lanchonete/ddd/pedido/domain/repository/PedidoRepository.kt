@@ -7,4 +7,6 @@ import org.springframework.data.domain.Pageable
 interface PedidoRepository {
     fun save(pedido: Pedido): Pedido
     fun findAll(pageable: Pageable): Page<Pedido>
+
+    fun findPedidoById(id:Long): Pedido?
 }
