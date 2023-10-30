@@ -26,7 +26,7 @@ data class Pedido(
         var status: StatusPedido?,
         @ManyToOne
     @JoinColumn(name = "cliente_id")
-    val cliente: Cliente?,
+    val cliente: Cliente? = null,
         @OneToMany(mappedBy = "pedido", cascade = [CascadeType.ALL], orphanRemoval = true)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var produtos: MutableList<Combo> = mutableListOf(),
@@ -48,6 +48,10 @@ data class Pedido(
 
     private fun recalcularPrecoTotal() {
         precoTotal = produtos.sumOf { it.calcularPrecoTotal() }
+    }
+
+    override fun toString(): String {
+        return "Pedido(id=$id, cliente=$cliente, ,precoTotal=$precoTotal, produtos=${produtos})"
     }
 
 }

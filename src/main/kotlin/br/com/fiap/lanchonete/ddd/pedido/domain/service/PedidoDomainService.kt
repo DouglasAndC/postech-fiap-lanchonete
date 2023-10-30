@@ -15,6 +15,7 @@ class PedidoDomainService(private val pedidoRepository: PedidoRepository) {
     @Transactional
     fun create(pedido: Pedido) = pedidoRepository.save(pedido)
     fun getAll(pageable: Pageable) = pedidoRepository.findAll(pageable)
+    @Transactional
     fun checkout(id: Long) =
         pedidoRepository.findPedidoById(id)?.also {
             if(it.status == StatusPedido.RECEBIDO){
