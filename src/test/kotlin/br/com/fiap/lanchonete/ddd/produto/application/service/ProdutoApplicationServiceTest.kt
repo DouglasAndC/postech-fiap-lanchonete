@@ -26,7 +26,7 @@ class ProdutoApplicationServiceTest {
     @Mock
     lateinit var produtoDomainService: ProdutoDomainService
 
-    val produto: Produto = Produto(
+    private val produto: Produto = Produto(
             id = 1L,
             nome = "Hamburguer",
             descricao = "hamburguer de carne 180g",
@@ -35,7 +35,7 @@ class ProdutoApplicationServiceTest {
             imagens = emptyList()
     )
 
-    val produtoRequest = ProdutoRequest(
+    private val produtoRequest = ProdutoRequest(
             nome = produto.nome,
             descricao = produto.descricao,
             categoria = produto.categoria,
@@ -57,7 +57,7 @@ class ProdutoApplicationServiceTest {
     @Test
     fun `deve criar e retornar DTO ao criar um produto`() {
 
-        `when`(produtoDomainService.create(produto)).thenReturn(produto)
+        `when`(produtoDomainService.create(produto.copy(id = null))).thenReturn(produto)
 
         val resultado = produtoApplicationService.create(produtoRequest)
 
@@ -77,13 +77,11 @@ class ProdutoApplicationServiceTest {
     fun `deve retornar DTO ao atualizar um produto`() {
 
 
-        `when`(produto.id?.let { produtoDomainService.put(it, produto) }).thenReturn(produto)
+        `when`(produtoDomainService.put(produto.id ?: 1L, produto.copy(id = null))).thenReturn(produto)
 
-        val resultado = produto.id?.let { produtoApplicationService.put(it, produtoRequest) }
+        val resultado = produtoApplicationService.put(produto.id ?: 1L, produtoRequest)
 
-        if (resultado != null) {
-            assertsProduto(resultado)
-        }
+        assertsProduto(resultado)
     }
 
     @Test
