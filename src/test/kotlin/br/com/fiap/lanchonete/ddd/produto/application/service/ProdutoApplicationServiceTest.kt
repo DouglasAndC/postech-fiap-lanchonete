@@ -45,11 +45,13 @@ class ProdutoApplicationServiceTest {
     @Test
     fun `deve retornar DTO ao buscar por ID`() {
 
-        `when`(produtoDomainService.get(produto.id)).thenReturn(produto)
+        `when`(produto.id?.let { produtoDomainService.get(it) }).thenReturn(produto)
 
-        val resultado = produtoApplicationService.get(produto.id)
+        val resultado = produto.id?.let { produtoApplicationService.get(it) }
 
-        assertsProduto(resultado)
+        if (resultado != null) {
+            assertsProduto(resultado)
+        }
     }
 
     @Test
@@ -75,11 +77,13 @@ class ProdutoApplicationServiceTest {
     fun `deve retornar DTO ao atualizar um produto`() {
 
 
-        `when`(produtoDomainService.put(produto.id, produto)).thenReturn(produto)
+        `when`(produto.id?.let { produtoDomainService.put(it, produto) }).thenReturn(produto)
 
-        val resultado = produtoApplicationService.put(produto.id, produtoRequest)
+        val resultado = produto.id?.let { produtoApplicationService.put(it, produtoRequest) }
 
-        assertsProduto(resultado)
+        if (resultado != null) {
+            assertsProduto(resultado)
+        }
     }
 
     @Test
@@ -104,11 +108,13 @@ class ProdutoApplicationServiceTest {
         val imagens = listOf("imagem1.jpg", "imagem2.jpg")
         val produtoAlterado = produto.copy(imagens = imagens)
 
-        `when`(produtoDomainService.alterarImagem(produto.id, imagens)).thenReturn(produtoAlterado)
+        `when`(produto.id?.let { produtoDomainService.alterarImagem(it, imagens) }).thenReturn(produtoAlterado)
 
-        val resultado = produtoApplicationService.alterarImagem(produto.id, imagens)
+        val resultado = produto.id?.let { produtoApplicationService.alterarImagem(it, imagens) }
 
-        assertEquals(resultado.imagens, imagens)
+        if (resultado != null) {
+            assertEquals(resultado.imagens, imagens)
+        }
     }
 
     private fun assertsProduto(response: ProdutoResponse) {

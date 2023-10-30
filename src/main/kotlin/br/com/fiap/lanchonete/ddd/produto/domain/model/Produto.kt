@@ -17,7 +17,7 @@ data class Produto(
                 allocationSize = 1)
         @GeneratedValue(generator = "produto_id_seq", strategy = GenerationType.SEQUENCE)
         @Id
-        val id: Long = 1,
+        val id: Long? = null,
         var nome: String = "",
         var categoria: CategoriaEnum,
         var descricao: String = "",

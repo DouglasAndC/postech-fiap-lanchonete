@@ -9,6 +9,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.SequenceGenerator
+import java.math.BigDecimal
 
 @Entity
 data class PedidoProduto(
@@ -18,9 +19,17 @@ data class PedidoProduto(
     var id: Long? = null,
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "produto_id")
-    var produto: Produto? = null,
+    var produto: Produto,
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pedido_id")
-    var pedido: Pedido? = null,
-    var quantidade: Int? = null
-)
+    var pedido: Pedido,
+    var quantidade: Int = 1
+){
+    fun incrementarQuantidade() {
+        quantidade += 1
+    }
+
+    fun calcularPrecoTotal(): BigDecimal {
+        return produto.preco.multiply(quantidade.toBigDecimal())
+    }
+}

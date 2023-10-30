@@ -1,10 +1,13 @@
 package br.com.fiap.lanchonete.ddd.pedido.application.service
 
+import br.com.fiap.lanchonete.ddd.cliente.domain.model.extension.toEntity
 import br.com.fiap.lanchonete.ddd.cliente.domain.service.ClienteDomainService
 import br.com.fiap.lanchonete.ddd.pedido.application.dto.request.PedidoRequest
 import br.com.fiap.lanchonete.ddd.pedido.application.dto.response.PedidoResponse
+import br.com.fiap.lanchonete.ddd.pedido.domain.model.Pedido
+import br.com.fiap.lanchonete.ddd.pedido.domain.model.PedidoProduto
+import br.com.fiap.lanchonete.ddd.pedido.domain.model.enums.StatusPedido
 import br.com.fiap.lanchonete.ddd.pedido.domain.model.extension.toDTO
-import br.com.fiap.lanchonete.ddd.pedido.domain.model.extension.toEntity
 import br.com.fiap.lanchonete.ddd.pedido.domain.service.PedidoDomainService
 import br.com.fiap.lanchonete.ddd.produto.domain.service.ProdutoDomainService
 import org.springframework.data.domain.Page
@@ -19,14 +22,20 @@ class PedidoApplicationService(private val pedidoDomainService: PedidoDomainServ
 
     fun create(pedidoRequest: PedidoRequest): PedidoResponse? {
 
-////        if(pedidoRequest.cliente?.let { ) } == false){
-////            throw BusinessException(PedidoExceptionEnum.PEDIDO_NOT_FOUND)
-////        }
-//        clienteDomainService.clienteExists(pedidoRequest.cliente?.toEntity() ?: null)
+        //TODO: Validar que cliente existe
 
-//        pedidoRequest.produtos.map{ produtoDomainService.get(it.id)}
+        val pedido = Pedido(
+            id = null,
+            status = StatusPedido.RECEBIDO,
+            cliente = pedidoRequest.cliente?.toEntity(),
+            produtos = emptyList<PedidoProduto>().toMutableList()
+        )
 
-        return pedidoDomainService.create(pedidoRequest.toEntity()).toDTO()
+        pedidoRequest.produtos.forEach{
+            id -> pedido.addProduto(produtoDomainService.get(id))
+        }
+
+        return pedidoDomainService.create(pedido).toDTO()
     }
 
     fun getAll(pageable: Pageable): Page<PedidoResponse> {

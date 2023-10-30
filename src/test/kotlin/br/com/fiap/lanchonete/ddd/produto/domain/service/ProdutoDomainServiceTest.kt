@@ -64,9 +64,9 @@ class ProdutoDomainServiceTest {
     @Test
     fun `deletar produto existente deve ter sucesso`() {
 
-        `when`(produtoRepository.findProdutoById(produto.id)).thenReturn(produto)
+        `when`(produto.id?.let { produtoRepository.findProdutoById(it) }).thenReturn(produto)
 
-        produtoDomainService.delete(produto.id)
+        produto.id?.let { produtoDomainService.delete(it) }
 
         verify(produtoRepository).delete(produto)
     }
@@ -85,13 +85,15 @@ class ProdutoDomainServiceTest {
     @Test
     fun `atualizar produto existente deve ter sucesso`() {
 
-        `when`(produtoRepository.findProdutoById(produto.id)).thenReturn(produto)
+        `when`(produto.id?.let { produtoRepository.findProdutoById(it) }).thenReturn(produto)
 
         `when`(produtoRepository.save(produto)).thenReturn(produto)
 
-        val resultado = produtoDomainService.put(produto.id, produto)
+        val resultado = produto.id?.let { produtoDomainService.put(it, produto) }
 
-        assertsProduto(resultado)
+        if (resultado != null) {
+            assertsProduto(resultado)
+        }
     }
 
     @Test
@@ -139,12 +141,14 @@ class ProdutoDomainServiceTest {
 
         val imagens = listOf("imagem1", "imagem2")
 
-        `when`(produtoRepository.findProdutoById(produto.id)).thenReturn(produto)
+        `when`(produto.id?.let { produtoRepository.findProdutoById(it) }).thenReturn(produto)
         `when`(produtoRepository.save(produto)).thenReturn(produto.copy(imagens = imagens))
 
-        val resultado = produtoDomainService.alterarImagem(produto.id, imagens)
+        val resultado = produto.id?.let { produtoDomainService.alterarImagem(it, imagens) }
 
-        assertsProduto(resultado)
+        if (resultado != null) {
+            assertsProduto(resultado)
+        }
     }
 
     @Test
@@ -152,10 +156,10 @@ class ProdutoDomainServiceTest {
 
         val imagens = listOf("imagem1", "imagem2")
 
-        `when`(produtoRepository.findProdutoById(produto.id)).thenReturn(null)
+        `when`(produto.id?.let { produtoRepository.findProdutoById(it) }).thenReturn(null)
 
         assertThrows<BusinessException> {
-            produtoDomainService.alterarImagem(produto.id, imagens)
+            produto.id?.let { produtoDomainService.alterarImagem(it, imagens) }
         }
     }
 

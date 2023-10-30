@@ -2,7 +2,9 @@ package br.com.fiap.lanchonete.ddd.pedido.domain.model
 
 import br.com.fiap.lanchonete.ddd.cliente.domain.model.Cliente
 import br.com.fiap.lanchonete.ddd.pedido.domain.model.enums.StatusPedido
+import br.com.fiap.lanchonete.ddd.produto.domain.model.Produto
 import jakarta.persistence.CascadeType
+import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
@@ -13,6 +15,7 @@ import jakarta.persistence.OneToMany
 import jakarta.persistence.SequenceGenerator
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
+import java.math.BigDecimal
 
 @Entity
 data class Pedido(
@@ -26,5 +29,25 @@ data class Pedido(
     val cliente: Cliente?,
         @OneToMany(mappedBy = "pedido", cascade = [CascadeType.ALL], orphanRemoval = true)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    var produtos: MutableList<PedidoProduto> = mutableListOf()
-)
+    var produtos: MutableList<PedidoProduto> = mutableListOf(),
+    @Column(precision = 15, scale = 2)
+    var precoTotal: BigDecimal = BigDecimal.ZERO
+){
+    fun addProduto(produto: Produto) {
+        val pedidoProdutoExistente = produtos.find { it.produto.id == produto.id }
+
+        if (pedidoProdutoExistente != null) {
+            pedidoProdutoExistente.incrementarQuantidade()
+        } else {
+            val novoPedidoProduto = PedidoProduto(pedido = this, produto = produto)
+            produtos.add(novoPedidoProduto)
+        }
+
+        recalcularPrecoTotal()
+    }
+
+    private fun recalcularPrecoTotal() {
+        precoTotal = produtos.sumOf { it.calcularPrecoTotal() }
+    }
+
+}
