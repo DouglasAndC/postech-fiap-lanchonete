@@ -1,5 +1,6 @@
 import br.com.fiap.lanchonete.ddd.cliente.application.dto.request.ClienteRequest
 import br.com.fiap.lanchonete.ddd.cliente.domain.model.Cliente
+import br.com.fiap.lanchonete.ddd.cliente.domain.service.ClienteDomainService
 import br.com.fiap.lanchonete.ddd.pedido.application.dto.request.PedidoRequest
 import br.com.fiap.lanchonete.ddd.pedido.application.service.PedidoApplicationService
 import br.com.fiap.lanchonete.ddd.pedido.domain.model.Combo
@@ -34,6 +35,9 @@ class PedidoApplicationServiceTest {
     @Mock
     private lateinit var produtoDomainService: ProdutoDomainService
 
+    @Mock
+    private lateinit var clienteDomainService: ClienteDomainService
+
     @InjectMocks
     private lateinit var pedidoApplicationService: PedidoApplicationService
 
@@ -59,7 +63,7 @@ class PedidoApplicationServiceTest {
     fun `deve buscar todos os pedidos`() {
         val pageable: Pageable = Mockito.mock(Pageable::class.java)
         val pedidoPage: Page<Pedido> = PageImpl(listOf(pedido))
-        Mockito.`when`(pedidoDomainService.getAll(pageable)).thenReturn(pedidoPage)
+        `when`(pedidoDomainService.getAll(pageable)).thenReturn(pedidoPage)
 
         val resultado = pedidoApplicationService.getAll(pageable)
 
