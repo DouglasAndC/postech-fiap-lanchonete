@@ -1,6 +1,6 @@
 package br.com.fiap.lanchonete.ddd.pedido.application.service
 
-import br.com.fiap.lanchonete.ddd.cliente.domain.model.extension.toEntity
+import br.com.fiap.lanchonete.ddd.cliente.domain.service.ClienteDomainService
 import br.com.fiap.lanchonete.ddd.pedido.application.dto.request.PedidoRequest
 import br.com.fiap.lanchonete.ddd.pedido.application.dto.response.PedidoResponse
 import br.com.fiap.lanchonete.ddd.pedido.domain.model.Combo
@@ -16,16 +16,17 @@ import org.springframework.stereotype.Service
 
 @Service
 class PedidoApplicationService(private val pedidoDomainService: PedidoDomainService,
-                               private val produtoDomainService: ProdutoDomainService) {
+                               private val produtoDomainService: ProdutoDomainService,
+                               private val clienteDomainService: ClienteDomainService) {
 
     fun create(pedidoRequest: PedidoRequest): PedidoResponse? {
 
-        //TODO: Validar que cliente existe
+        val cliente = pedidoRequest.cliente?.cpf?.let { clienteDomainService.findByCpf(it) }
 
         val pedido = Pedido(
             id = null,
             status = StatusPedido.RECEBIDO,
-            cliente = pedidoRequest.cliente?.toEntity(),
+            cliente = cliente,
             produtos = emptyList<Combo>().toMutableList()
         )
 
