@@ -1,5 +1,5 @@
 # postech-fiap-lanchonete
-# Lanchonete - Versão 0.0.1
+# Lanchonete - Versão 1.0.0
 
 Bem-vindo ao projeto **Lanchonete**! Esta é a versão 1.0.0, e abaixo você encontrará todas as instruções necessárias para começar a utilizar Docker e Docker Compose para rodar a aplicação.
 
