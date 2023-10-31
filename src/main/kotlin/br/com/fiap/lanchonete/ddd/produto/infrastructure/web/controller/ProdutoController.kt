@@ -57,7 +57,7 @@ class ProdutoController(
     fun getByCategoria(@PathVariable(name = "categoria") categoria: CategoriaEnum, pageable: Pageable): ResponseEntity<Page<ProdutoResponse>> =
         ResponseEntity(produtoApplicationService.getByCategoria(categoria, pageable), HttpStatus.OK)
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/{id}/imagem")
     fun alterarImagem(@PathVariable(name = "id") id: Long, @Valid @RequestBody imagensRequest: ImagemRequest): ResponseEntity<ProdutoResponse> =
             ResponseEntity(produtoApplicationService.alterarImagem(id,imagensRequest.imagens), HttpStatus.OK)
 
