@@ -33,7 +33,7 @@ class PedidoController(private val pedidoApplicationService: PedidoApplicationSe
     fun getAll(pageable: Pageable): ResponseEntity<Page<PedidoResponse>> =
         ResponseEntity(pedidoApplicationService.getAll(pageable), HttpStatus.OK)
 
-    @PatchMapping
+    @PatchMapping("/{id}")
     fun checkout(@PathVariable(name = "id") id: Long): ResponseEntity<PedidoResponse> =
             ResponseEntity(pedidoApplicationService.checkout(id), HttpStatus.OK)
 
