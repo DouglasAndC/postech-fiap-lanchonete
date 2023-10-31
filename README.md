@@ -26,7 +26,7 @@ lanchonete/
 
 Para construir a imagem Docker do projeto, abra um terminal, vá até a raiz do projeto e execute o seguinte comando:
 
-`docker build -t lanchonete:0.0.1 .`
+`docker build -t lanchonete:1.0.0 .`
 
 ## Executando a Imagem Docker com `postgres:13.3`:
 
