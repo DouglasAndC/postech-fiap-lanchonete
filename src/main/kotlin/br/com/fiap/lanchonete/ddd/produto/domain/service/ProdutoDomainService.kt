@@ -13,29 +13,30 @@ class ProdutoDomainService(
         private val produtoRepository: ProdutoRepository
 ) {
     fun get(id: Long) =
-            produtoRepository.findProdutoById(id)
-                    ?: throw BusinessException(ProdutoExceptionEnum.PRODUTO_NOT_FOUND)
+            produtoRepository.findProdutoById(id) ?:
+            throw BusinessException(ProdutoExceptionEnum.PRODUTO_NOT_FOUND, messages = listOf("Produto com id=$id"))
 
     fun create(produto: Produto) = produtoRepository.save(produto)
 
     fun delete(id: Long) = produtoRepository.findProdutoById(id)?.let {
         produtoRepository.delete(it)
-    } ?: throw BusinessException(ProdutoExceptionEnum.PRODUTO_NOT_FOUND)
+    } ?: throw BusinessException(ProdutoExceptionEnum.PRODUTO_NOT_FOUND, messages = listOf("Produto com id=$id"))
 
     fun put(id: Long, produto: Produto) =
          produtoRepository.findProdutoById(id)?.let {
             produtoRepository.save(produto)
-        } ?: throw BusinessException(ProdutoExceptionEnum.PRODUTO_NOT_FOUND)
+        } ?: throw BusinessException(ProdutoExceptionEnum.PRODUTO_NOT_FOUND, messages = listOf("Produto com id=$id"))
 
     fun getByCategoria(categoria: CategoriaEnum, pageable: Pageable) =
             produtoRepository.findProdutoByCategoria(categoria, pageable).also {
-                if (it.isEmpty) throw BusinessException(ProdutoExceptionEnum.CATEGORIA_NOT_FOUND)
+                if (it.isEmpty) throw BusinessException(ProdutoExceptionEnum.CATEGORIA_NOT_FOUND,
+                    messages = listOf("Produto com categoria=$categoria"))
             }
 
     fun alterarImagem(id: Long, imagens: List<String>): Produto =
         produtoRepository.findProdutoById(id)?.let {
             it.imagens = imagens
             produtoRepository.save(it)
-        } ?: throw BusinessException(ProdutoExceptionEnum.PRODUTO_NOT_FOUND)
+        } ?: throw BusinessException(ProdutoExceptionEnum.PRODUTO_NOT_FOUND, messages = listOf("Produto com id=$id"))
 
 }
