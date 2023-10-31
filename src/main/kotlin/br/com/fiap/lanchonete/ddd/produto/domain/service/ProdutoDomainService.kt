@@ -24,7 +24,7 @@ class ProdutoDomainService(
 
     fun put(id: Long, produto: Produto) =
          produtoRepository.findProdutoById(id)?.let {
-            produtoRepository.save(produto)
+            produtoRepository.save(it)
         } ?: throw BusinessException(ProdutoExceptionEnum.PRODUTO_NOT_FOUND, messages = listOf("Produto com id=$id"))
 
     fun getByCategoria(categoria: CategoriaEnum, pageable: Pageable) =
