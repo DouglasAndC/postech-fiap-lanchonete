@@ -1,6 +1,8 @@
 package br.com.fiap.lanchonete.ddd.produto.domain.model
 
 import br.com.fiap.lanchonete.ddd.produto.domain.model.enums.CategoriaEnum
+import jakarta.persistence.CollectionTable
+import jakarta.persistence.Column
 import jakarta.persistence.ElementCollection
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -23,5 +25,7 @@ data class Produto(
         var descricao: String = "",
         var preco: BigDecimal,
         @ElementCollection
+        @CollectionTable(name = "imagens_produto")
+        @Column(name = "string", length = 10485760)
         var imagens: List<String> = emptyList()
 )
