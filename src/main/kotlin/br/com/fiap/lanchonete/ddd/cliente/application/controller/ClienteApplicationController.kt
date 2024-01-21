@@ -4,7 +4,7 @@ import br.com.fiap.lanchonete.ddd.cliente.application.dto.request.ClienteRequest
 import br.com.fiap.lanchonete.ddd.cliente.application.dto.response.ClienteResponse
 import br.com.fiap.lanchonete.ddd.cliente.domain.entities.extension.toDTO
 import br.com.fiap.lanchonete.ddd.cliente.domain.entities.extension.toEntity
-import br.com.fiap.lanchonete.ddd.cliente.domain.service.ClienteDomainUseCase
+import br.com.fiap.lanchonete.ddd.cliente.domain.usecases.ClienteDomainUseCase
 import org.springframework.stereotype.Service
 
 @Service

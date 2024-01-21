@@ -1,4 +1,4 @@
-package br.com.fiap.lanchonete.ddd.pedido.domain.model
+package br.com.fiap.lanchonete.ddd.pedido.domain.entities
 
 import br.com.fiap.lanchonete.ddd.produto.domain.model.Produto
 import jakarta.persistence.Entity

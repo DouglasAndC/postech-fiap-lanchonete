@@ -1,4 +1,4 @@
-package br.com.fiap.lanchonete.ddd.cliente.domain.gateway
+package br.com.fiap.lanchonete.ddd.cliente.application.gateway
 
 import br.com.fiap.lanchonete.ddd.cliente.domain.entities.Cliente
 import org.springframework.data.repository.NoRepositoryBean

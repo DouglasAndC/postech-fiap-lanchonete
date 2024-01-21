@@ -1,8 +1,8 @@
 package br.com.fiap.lanchonete.ddd.pedido.infrastructure.web.controller
 
+import br.com.fiap.lanchonete.ddd.pedido.application.controller.PedidoApplicationController
 import br.com.fiap.lanchonete.ddd.pedido.application.dto.request.PedidoRequest
 import br.com.fiap.lanchonete.ddd.pedido.application.dto.response.PedidoResponse
-import br.com.fiap.lanchonete.ddd.pedido.application.service.PedidoApplicationService
 import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -19,23 +19,23 @@ import org.springframework.web.util.UriComponentsBuilder
 
 @RestController
 @RequestMapping("/pedidos")
-class PedidoController(private val pedidoApplicationService: PedidoApplicationService) {
+class PedidoController(private val pedidoApplicationController: PedidoApplicationController) {
 
     @PostMapping
     fun create(@Valid @RequestBody pedidoRequest: PedidoRequest,
                uriBuilder: UriComponentsBuilder
     ): ResponseEntity<PedidoResponse> {
-        val pedidoCreated = pedidoApplicationService.create(pedidoRequest)
+        val pedidoCreated = pedidoApplicationController.create(pedidoRequest)
         val uri = uriBuilder.path("/api/v1/pedido/{id}").buildAndExpand(pedidoCreated?.id).toUri()
         return ResponseEntity.created(uri).body(pedidoCreated)
     }
     @GetMapping
     fun getAll(pageable: Pageable): ResponseEntity<Page<PedidoResponse>> =
-        ResponseEntity(pedidoApplicationService.getAll(pageable), HttpStatus.OK)
+        ResponseEntity(pedidoApplicationController.getAll(pageable), HttpStatus.OK)
 
     @PatchMapping("/{id}")
     fun checkout(@PathVariable(name = "id") id: Long): ResponseEntity<PedidoResponse> =
-            ResponseEntity(pedidoApplicationService.checkout(id), HttpStatus.OK)
+            ResponseEntity(pedidoApplicationController.checkout(id), HttpStatus.OK)
 
 
 }

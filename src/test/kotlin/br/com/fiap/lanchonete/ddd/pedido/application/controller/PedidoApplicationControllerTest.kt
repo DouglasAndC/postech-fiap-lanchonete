@@ -1,12 +1,11 @@
 import br.com.fiap.lanchonete.ddd.cliente.application.dto.request.ClienteRequest
 import br.com.fiap.lanchonete.ddd.cliente.domain.entities.Cliente
-import br.com.fiap.lanchonete.ddd.cliente.domain.service.ClienteDomainUseCase
+import br.com.fiap.lanchonete.ddd.pedido.application.controller.PedidoApplicationController
 import br.com.fiap.lanchonete.ddd.pedido.application.dto.request.PedidoRequest
-import br.com.fiap.lanchonete.ddd.pedido.application.service.PedidoApplicationService
-import br.com.fiap.lanchonete.ddd.pedido.domain.model.Combo
-import br.com.fiap.lanchonete.ddd.pedido.domain.model.Pedido
-import br.com.fiap.lanchonete.ddd.pedido.domain.model.enums.StatusPedido
-import br.com.fiap.lanchonete.ddd.pedido.domain.service.PedidoDomainService
+import br.com.fiap.lanchonete.ddd.pedido.domain.entities.Combo
+import br.com.fiap.lanchonete.ddd.pedido.domain.entities.Pedido
+import br.com.fiap.lanchonete.ddd.pedido.domain.entities.enums.StatusPedido
+import br.com.fiap.lanchonete.ddd.pedido.domain.usecases.PedidoDomainUseCase
 import br.com.fiap.lanchonete.ddd.produto.domain.model.Produto
 import br.com.fiap.lanchonete.ddd.produto.domain.model.enums.CategoriaEnum
 import br.com.fiap.lanchonete.ddd.produto.domain.service.ProdutoDomainService
@@ -27,19 +26,16 @@ import org.springframework.data.domain.Pageable
 import java.math.BigDecimal
 
 @ExtendWith(MockitoExtension::class)
-class PedidoApplicationServiceTest {
+class PedidoApplicationControllerTest {
 
     @Mock
-    private lateinit var pedidoDomainService: PedidoDomainService
+    private lateinit var pedidoDomainUseCase: PedidoDomainUseCase
 
     @Mock
     private lateinit var produtoDomainService: ProdutoDomainService
 
-    @Mock
-    private lateinit var clienteDomainUseCase: ClienteDomainUseCase
-
     @InjectMocks
-    private lateinit var pedidoApplicationService: PedidoApplicationService
+    private lateinit var pedidoApplicationController: PedidoApplicationController
 
     private var pedidoRequestValido =
         PedidoRequest(ClienteRequest("123.456.789-09","João", "cliente@teste.com"), listOf(1L))
@@ -50,9 +46,9 @@ class PedidoApplicationServiceTest {
     @Test
     fun `deve criar pedido com sucesso`() {
         `when`(produtoDomainService.get(1L)).thenReturn(produto)
-        `when`(pedidoDomainService.create(anyOrNull())).thenReturn(pedido.copy(id = 1L, produtos = listOf(pedidoProduto).toMutableList()))
+        `when`(pedidoDomainUseCase.create(anyOrNull())).thenReturn(pedido.copy(id = 1L, produtos = listOf(pedidoProduto).toMutableList()))
 
-        val resultado = pedidoApplicationService.create(pedidoRequestValido)
+        val resultado = pedidoApplicationController.create(pedidoRequestValido)
 
         assertNotNull(resultado)
         assertEquals(pedido.id, resultado?.id)
@@ -63,9 +59,9 @@ class PedidoApplicationServiceTest {
     fun `deve buscar todos os pedidos`() {
         val pageable: Pageable = Mockito.mock(Pageable::class.java)
         val pedidoPage: Page<Pedido> = PageImpl(listOf(pedido))
-        `when`(pedidoDomainService.getAll(pageable)).thenReturn(pedidoPage)
+        `when`(pedidoDomainUseCase.getAll(pageable)).thenReturn(pedidoPage)
 
-        val resultado = pedidoApplicationService.getAll(pageable)
+        val resultado = pedidoApplicationController.getAll(pageable)
 
         assertNotNull(resultado)
         assertEquals(1, resultado.totalElements)
@@ -74,19 +70,19 @@ class PedidoApplicationServiceTest {
 
     @Test
     fun `deve realizar checkout com sucesso`() {
-        `when`(pedidoDomainService.checkout(1L)).thenReturn(pedido)
+        `when`(pedidoDomainUseCase.checkout(1L)).thenReturn(pedido)
 
-        val resultado = pedidoApplicationService.checkout(1L)
+        val resultado = pedidoApplicationController.checkout(1L)
 
         assertNotNull(resultado)
         assertEquals(pedido.id, resultado.id)
     }
 
     @Test
-    fun `deve tratar pedido não encontrado no checkout`() {
-        `when`(pedidoDomainService.checkout(1L)).thenReturn(null)
+    fun `deve tratar pedido nao encontrado no checkout`() {
+        `when`(pedidoDomainUseCase.checkout(1L)).thenReturn(null)
 
-        val resultado = runCatching { pedidoApplicationService.checkout(1L) }
+        val resultado = runCatching { pedidoApplicationController.checkout(1L) }
 
         assertTrue(resultado.isFailure)
     }
