@@ -16,7 +16,7 @@ import org.springframework.web.util.UriComponentsBuilder
 
 @RestController
 @RequestMapping("/clientes")
-class ClienteController(private val clienteService: ClienteApplicationController) {
+class ClienteHttpController(private val clienteService: ClienteApplicationController) {
     @PostMapping
     fun create(@Valid @RequestBody cliente: ClienteRequest,
                uriBuilder: UriComponentsBuilder): ResponseEntity<ClienteResponse> {

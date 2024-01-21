@@ -1,10 +1,10 @@
-package br.com.fiap.lanchonete.ddd.produto.application.service
+package br.com.fiap.lanchonete.ddd.produto.application.controller
 
 import br.com.fiap.lanchonete.ddd.produto.application.dto.request.ProdutoRequest
 import br.com.fiap.lanchonete.ddd.produto.application.dto.response.ProdutoResponse
-import br.com.fiap.lanchonete.ddd.produto.domain.model.Produto
-import br.com.fiap.lanchonete.ddd.produto.domain.model.enums.CategoriaEnum
-import br.com.fiap.lanchonete.ddd.produto.domain.service.ProdutoDomainService
+import br.com.fiap.lanchonete.ddd.produto.domain.entities.Produto
+import br.com.fiap.lanchonete.ddd.produto.domain.entities.enums.CategoriaEnum
+import br.com.fiap.lanchonete.ddd.produto.domain.service.ProdutoDomainUseCase
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -18,13 +18,13 @@ import org.springframework.data.domain.PageRequest
 import java.math.BigDecimal
 
 @ExtendWith(MockitoExtension::class)
-class ProdutoApplicationServiceTest {
+class ProdutoApplicationControllerTest {
 
     @InjectMocks
-    lateinit var produtoApplicationService: ProdutoApplicationService
+    lateinit var produtoApplicationController: ProdutoApplicationController
 
     @Mock
-    lateinit var produtoDomainService: ProdutoDomainService
+    lateinit var produtoDomainUseCase: ProdutoDomainUseCase
 
     private val produto: Produto = Produto(
             id = 1L,
@@ -45,9 +45,9 @@ class ProdutoApplicationServiceTest {
     @Test
     fun `deve retornar DTO ao buscar por ID`() {
 
-        `when`(produto.id?.let { produtoDomainService.get(it) }).thenReturn(produto)
+        `when`(produto.id?.let { produtoDomainUseCase.get(it) }).thenReturn(produto)
 
-        val resultado = produto.id?.let { produtoApplicationService.get(it) }
+        val resultado = produto.id?.let { produtoApplicationController.get(it) }
 
         if (resultado != null) {
             assertsProduto(resultado)
@@ -57,9 +57,9 @@ class ProdutoApplicationServiceTest {
     @Test
     fun `deve criar e retornar DTO ao criar um produto`() {
 
-        `when`(produtoDomainService.create(produto.copy(id = null))).thenReturn(produto)
+        `when`(produtoDomainUseCase.create(produto.copy(id = null))).thenReturn(produto)
 
-        val resultado = produtoApplicationService.create(produtoRequest)
+        val resultado = produtoApplicationController.create(produtoRequest)
 
         assertsProduto(resultado)
     }
@@ -68,18 +68,18 @@ class ProdutoApplicationServiceTest {
     fun `deve chamar metodo delete ao excluir um produto`() {
         val produtoId = 1L
 
-        produtoApplicationService.delete(produtoId)
+        produtoApplicationController.delete(produtoId)
 
-        verify(produtoDomainService).delete(produtoId)
+        verify(produtoDomainUseCase).delete(produtoId)
     }
 
     @Test
     fun `deve retornar DTO ao atualizar um produto`() {
 
 
-        `when`(produtoDomainService.put(produto.id ?: 1L, produto.copy(id = null))).thenReturn(produto)
+        `when`(produtoDomainUseCase.put(produto.id ?: 1L, produto.copy(id = null))).thenReturn(produto)
 
-        val resultado = produtoApplicationService.put(produto.id ?: 1L, produtoRequest)
+        val resultado = produtoApplicationController.put(produto.id ?: 1L, produtoRequest)
 
         assertsProduto(resultado)
     }
@@ -92,9 +92,9 @@ class ProdutoApplicationServiceTest {
                 produto.copy(id = 2)
         )
         val page = PageImpl(produtos, pageable, produtos.size.toLong())
-        `when`(produtoDomainService.getByCategoria(CategoriaEnum.LANCHE, pageable)).thenReturn(page)
+        `when`(produtoDomainUseCase.getByCategoria(CategoriaEnum.LANCHE, pageable)).thenReturn(page)
 
-        val resultado = produtoApplicationService.getByCategoria(CategoriaEnum.LANCHE, pageable)
+        val resultado = produtoApplicationController.getByCategoria(CategoriaEnum.LANCHE, pageable)
 
         assertEquals(2, resultado.totalElements)
     }
@@ -106,9 +106,9 @@ class ProdutoApplicationServiceTest {
         val imagens = listOf("imagem1.jpg", "imagem2.jpg")
         val produtoAlterado = produto.copy(imagens = imagens)
 
-        `when`(produto.id?.let { produtoDomainService.alterarImagem(it, imagens) }).thenReturn(produtoAlterado)
+        `when`(produto.id?.let { produtoDomainUseCase.alterarImagem(it, imagens) }).thenReturn(produtoAlterado)
 
-        val resultado = produto.id?.let { produtoApplicationService.alterarImagem(it, imagens) }
+        val resultado = produto.id?.let { produtoApplicationController.alterarImagem(it, imagens) }
 
         if (resultado != null) {
             assertEquals(resultado.imagens, imagens)

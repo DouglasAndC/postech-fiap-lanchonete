@@ -1,6 +1,6 @@
-package br.com.fiap.lanchonete.ddd.produto.domain.model
+package br.com.fiap.lanchonete.ddd.produto.domain.entities
 
-import br.com.fiap.lanchonete.ddd.produto.domain.model.enums.CategoriaEnum
+import br.com.fiap.lanchonete.ddd.produto.domain.entities.enums.CategoriaEnum
 import jakarta.persistence.CollectionTable
 import jakarta.persistence.Column
 import jakarta.persistence.ElementCollection

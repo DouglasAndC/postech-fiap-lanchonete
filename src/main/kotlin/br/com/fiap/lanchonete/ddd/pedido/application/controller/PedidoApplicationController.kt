@@ -8,7 +8,7 @@ import br.com.fiap.lanchonete.ddd.pedido.domain.entities.Pedido
 import br.com.fiap.lanchonete.ddd.pedido.domain.entities.enums.StatusPedido
 import br.com.fiap.lanchonete.ddd.pedido.domain.entities.extension.toDTO
 import br.com.fiap.lanchonete.ddd.pedido.domain.usecases.PedidoDomainUseCase
-import br.com.fiap.lanchonete.ddd.produto.domain.service.ProdutoDomainService
+import br.com.fiap.lanchonete.ddd.produto.domain.service.ProdutoDomainUseCase
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class PedidoApplicationController(private val pedidoDomainUseCase: PedidoDomainUseCase,
-                                  private val produtoDomainService: ProdutoDomainService,
+                                  private val produtoDomainUseCase: ProdutoDomainUseCase,
                                   private val clienteDomainUseCase: ClienteDomainUseCase) {
 
     fun create(pedidoRequest: PedidoRequest): PedidoResponse? {
@@ -31,7 +31,7 @@ class PedidoApplicationController(private val pedidoDomainUseCase: PedidoDomainU
         )
 
         pedidoRequest.produtos.forEach{
-            id -> pedido.addProduto(produtoDomainService.get(id))
+            id -> pedido.addProduto(produtoDomainUseCase.get(id))
         }
 
         return pedidoDomainUseCase.create(pedido).toDTO()

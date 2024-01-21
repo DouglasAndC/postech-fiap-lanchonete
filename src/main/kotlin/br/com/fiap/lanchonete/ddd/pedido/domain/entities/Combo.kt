@@ -1,6 +1,6 @@
 package br.com.fiap.lanchonete.ddd.pedido.domain.entities
 
-import br.com.fiap.lanchonete.ddd.produto.domain.model.Produto
+import br.com.fiap.lanchonete.ddd.produto.domain.entities.Produto
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue

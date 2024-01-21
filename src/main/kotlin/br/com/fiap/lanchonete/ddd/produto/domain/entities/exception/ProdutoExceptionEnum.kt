@@ -1,4 +1,4 @@
-package br.com.fiap.lanchonete.ddd.produto.domain.model.exception
+package br.com.fiap.lanchonete.ddd.produto.domain.entities.exception
 
 import br.com.fiap.lanchonete.exception.dto.ResponseErrorDto
 import br.com.fiap.lanchonete.exception.enums.ExceptionEnum

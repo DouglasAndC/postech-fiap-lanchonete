@@ -6,9 +6,9 @@ import br.com.fiap.lanchonete.ddd.pedido.domain.entities.Combo
 import br.com.fiap.lanchonete.ddd.pedido.domain.entities.Pedido
 import br.com.fiap.lanchonete.ddd.pedido.domain.entities.enums.StatusPedido
 import br.com.fiap.lanchonete.ddd.pedido.domain.usecases.PedidoDomainUseCase
-import br.com.fiap.lanchonete.ddd.produto.domain.model.Produto
-import br.com.fiap.lanchonete.ddd.produto.domain.model.enums.CategoriaEnum
-import br.com.fiap.lanchonete.ddd.produto.domain.service.ProdutoDomainService
+import br.com.fiap.lanchonete.ddd.produto.domain.entities.Produto
+import br.com.fiap.lanchonete.ddd.produto.domain.entities.enums.CategoriaEnum
+import br.com.fiap.lanchonete.ddd.produto.domain.service.ProdutoDomainUseCase
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -32,7 +32,7 @@ class PedidoApplicationControllerTest {
     private lateinit var pedidoDomainUseCase: PedidoDomainUseCase
 
     @Mock
-    private lateinit var produtoDomainService: ProdutoDomainService
+    private lateinit var produtoDomainUseCase: ProdutoDomainUseCase
 
     @InjectMocks
     private lateinit var pedidoApplicationController: PedidoApplicationController
@@ -45,7 +45,7 @@ class PedidoApplicationControllerTest {
 
     @Test
     fun `deve criar pedido com sucesso`() {
-        `when`(produtoDomainService.get(1L)).thenReturn(produto)
+        `when`(produtoDomainUseCase.get(1L)).thenReturn(produto)
         `when`(pedidoDomainUseCase.create(anyOrNull())).thenReturn(pedido.copy(id = 1L, produtos = listOf(pedidoProduto).toMutableList()))
 
         val resultado = pedidoApplicationController.create(pedidoRequestValido)
