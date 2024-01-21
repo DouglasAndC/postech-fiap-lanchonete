@@ -1,8 +1,8 @@
-package br.com.fiap.lanchonete.ddd.cliente.domain.service
+package br.com.fiap.lanchonete.ddd.cliente.domain.usecases
 
+import br.com.fiap.lanchonete.ddd.cliente.application.gateway.ClienteRepositoryGateway
 import br.com.fiap.lanchonete.ddd.cliente.domain.entities.Cliente
 import br.com.fiap.lanchonete.ddd.cliente.domain.exception.ClienteExceptionEnum
-import br.com.fiap.lanchonete.ddd.cliente.domain.gateway.ClienteRepositoryGateway
 import br.com.fiap.lanchonete.exception.BusinessException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

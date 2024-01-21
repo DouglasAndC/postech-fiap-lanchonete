@@ -1,10 +1,10 @@
-package br.com.fiap.lanchonete.ddd.pedido.domain.service
+package br.com.fiap.lanchonete.ddd.pedido.domain.usecases
 
 import br.com.fiap.lanchonete.ddd.cliente.domain.entities.Cliente
-import br.com.fiap.lanchonete.ddd.pedido.domain.model.Combo
-import br.com.fiap.lanchonete.ddd.pedido.domain.model.Pedido
-import br.com.fiap.lanchonete.ddd.pedido.domain.model.enums.StatusPedido
-import br.com.fiap.lanchonete.ddd.pedido.domain.repository.PedidoRepository
+import br.com.fiap.lanchonete.ddd.pedido.application.gateway.PedidoRepositoryGateway
+import br.com.fiap.lanchonete.ddd.pedido.domain.entities.Combo
+import br.com.fiap.lanchonete.ddd.pedido.domain.entities.Pedido
+import br.com.fiap.lanchonete.ddd.pedido.domain.entities.enums.StatusPedido
 import br.com.fiap.lanchonete.exception.BusinessException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -19,13 +19,13 @@ import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 
 @ExtendWith(MockitoExtension::class)
-class PedidoDomainServiceTest {
+class PedidoDomainUseCaseTest {
 
     @InjectMocks
-    lateinit var pedidoDomainService: PedidoDomainService
+    lateinit var pedidoDomainUseCase: PedidoDomainUseCase
 
     @Mock
-    lateinit var pedidoRepository: PedidoRepository
+    lateinit var pedidoRepositoryGateway: PedidoRepositoryGateway
 
     private val cliente = Cliente(1L, "123.456.789-09", "Cliente Teste", "cliente@teste.com")
 
@@ -34,33 +34,33 @@ class PedidoDomainServiceTest {
 
     @Test
     fun `test create should save and return pedido`() {
-        `when`(pedidoRepository.save(pedido)).thenReturn(pedido)
+        `when`(pedidoRepositoryGateway.save(pedido)).thenReturn(pedido)
 
-        val result = pedidoDomainService.create(pedido)
+        val result = pedidoDomainUseCase.create(pedido)
 
         assertEquals(pedido, result)
-        verify(pedidoRepository).save(pedido)
+        verify(pedidoRepositoryGateway).save(pedido)
     }
 
     @Test
     fun `test getAll should return pageable pedidos`() {
         val pageable = PageRequest.of(0, 10)
         val pedidos = PageImpl(listOf(pedido))
-        `when`(pedidoRepository.findAll(pageable)).thenReturn(pedidos)
+        `when`(pedidoRepositoryGateway.findAll(pageable)).thenReturn(pedidos)
 
-        val result = pedidoDomainService.getAll(pageable)
+        val result = pedidoDomainUseCase.getAll(pageable)
 
         assertEquals(pedidos, result)
-        verify(pedidoRepository).findAll(pageable)
+        verify(pedidoRepositoryGateway).findAll(pageable)
     }
 
     @Test
     fun `deve alterar status para EM_PREPARACAO se o pedido estiver RECEBIDO`() {
 
-        `when`(pedidoRepository.findPedidoById(pedido.id!!)).thenReturn(pedido)
-        `when`(pedidoRepository.save(pedido)).thenReturn(pedido.copy(status = StatusPedido.RECEBIDO))
+        `when`(pedidoRepositoryGateway.findPedidoById(pedido.id!!)).thenReturn(pedido)
+        `when`(pedidoRepositoryGateway.save(pedido)).thenReturn(pedido.copy(status = StatusPedido.RECEBIDO))
 
-        val resultado = pedidoDomainService.checkout(pedido.id!!)
+        val resultado = pedidoDomainUseCase.checkout(pedido.id!!)
 
         assertsPedido(resultado)
     }
@@ -68,20 +68,20 @@ class PedidoDomainServiceTest {
     @Test
     fun `deve lancar excecao se o status do pedido nao for RECEBIDO`() {
 
-        `when`(pedidoRepository.findPedidoById(pedido.id!!)).thenReturn(pedido.copy(status = StatusPedido.EM_PREPARACAO))
+        `when`(pedidoRepositoryGateway.findPedidoById(pedido.id!!)).thenReturn(pedido.copy(status = StatusPedido.EM_PREPARACAO))
 
         assertThrows <BusinessException> {
-            pedidoDomainService.checkout(pedido.id!!)
+            pedidoDomainUseCase.checkout(pedido.id!!)
         }
     }
 
     @Test
     fun `deve lancar excecao se o pedido nao for encontrado`() {
 
-        `when`(pedidoRepository.findPedidoById(pedido.id!!)).thenReturn(null)
+        `when`(pedidoRepositoryGateway.findPedidoById(pedido.id!!)).thenReturn(null)
 
         assertThrows <BusinessException> {
-            pedidoDomainService.checkout(pedido.id!!)
+            pedidoDomainUseCase.checkout(pedido.id!!)
         }
     }
 

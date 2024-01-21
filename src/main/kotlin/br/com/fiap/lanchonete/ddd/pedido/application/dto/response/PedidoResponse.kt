@@ -1,7 +1,7 @@
 package br.com.fiap.lanchonete.ddd.pedido.application.dto.response
 
 import br.com.fiap.lanchonete.ddd.cliente.application.dto.response.ClienteResponse
-import br.com.fiap.lanchonete.ddd.pedido.domain.model.enums.StatusPedido
+import br.com.fiap.lanchonete.ddd.pedido.domain.entities.enums.StatusPedido
 
 data class PedidoResponse(
     val id: Long?,

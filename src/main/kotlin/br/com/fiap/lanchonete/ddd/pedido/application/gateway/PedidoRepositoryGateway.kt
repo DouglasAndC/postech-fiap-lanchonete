@@ -1,12 +1,11 @@
-package br.com.fiap.lanchonete.ddd.pedido.domain.repository
+package br.com.fiap.lanchonete.ddd.pedido.application.gateway
 
-import br.com.fiap.lanchonete.ddd.pedido.domain.model.Pedido
+import br.com.fiap.lanchonete.ddd.pedido.domain.entities.Pedido
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
-interface PedidoRepository {
+interface PedidoRepositoryGateway {
     fun save(pedido: Pedido): Pedido
     fun findAll(pageable: Pageable): Page<Pedido>
-
     fun findPedidoById(id:Long): Pedido?
 }

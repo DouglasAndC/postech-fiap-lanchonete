@@ -1,4 +1,4 @@
-package br.com.fiap.lanchonete.ddd.pedido.domain.model.enums
+package br.com.fiap.lanchonete.ddd.pedido.domain.entities.enums
 
 enum class StatusPedido {
     RECEBIDO,
