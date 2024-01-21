@@ -1,20 +1,20 @@
 package br.com.fiap.lanchonete.ddd.cliente.application
 
+import br.com.fiap.lanchonete.ddd.cliente.application.controller.ClienteApplicationController
 import br.com.fiap.lanchonete.ddd.cliente.application.dto.request.ClienteRequest
 import br.com.fiap.lanchonete.ddd.cliente.application.dto.response.ClienteResponse
-import br.com.fiap.lanchonete.ddd.cliente.application.service.ClienteApplicationService
-import br.com.fiap.lanchonete.ddd.cliente.domain.model.Cliente
-import br.com.fiap.lanchonete.ddd.cliente.domain.model.extension.toEntity
-import br.com.fiap.lanchonete.ddd.cliente.domain.service.ClienteDomainService
+import br.com.fiap.lanchonete.ddd.cliente.domain.entities.Cliente
+import br.com.fiap.lanchonete.ddd.cliente.domain.entities.extension.toEntity
+import br.com.fiap.lanchonete.ddd.cliente.domain.service.ClienteDomainUseCase
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 
-class ClienteApplicationServiceTest {
+class ClienteApplicationControllerTest {
 
-    private val clienteDomainService = mock(ClienteDomainService::class.java)
-    private val clienteApplicationService = ClienteApplicationService(clienteDomainService)
+    private val clienteDomainUseCase = mock(ClienteDomainUseCase::class.java)
+    private val clienteApplicationController = ClienteApplicationController(clienteDomainUseCase)
 
     @Test
     fun `teste criacao do cliente na layer application`() {
@@ -28,9 +28,9 @@ class ClienteApplicationServiceTest {
             email = "email@email.com",
             nome = "Jonh Doe")
 
-        `when`(clienteDomainService.create(cliente)).thenReturn(cliente)
+        `when`(clienteDomainUseCase.create(cliente)).thenReturn(cliente)
 
-        val result = clienteApplicationService.create(clienteRequestDto)
+        val result = clienteApplicationController.create(clienteRequestDto)
 
         assertEquals(clienteResponse, result)
     }
@@ -47,9 +47,9 @@ class ClienteApplicationServiceTest {
             email = "email@email.com",
             nome = "Jonh Doe")
 
-        `when`(clienteDomainService.findByCpf(cpf)).thenReturn(cliente)
+        `when`(clienteDomainUseCase.findByCpf(cpf)).thenReturn(cliente)
 
-        val result = clienteApplicationService.findByCpf(cpf)
+        val result = clienteApplicationController.findByCpf(cpf)
 
         assertEquals(clienteResponse, result)
     }

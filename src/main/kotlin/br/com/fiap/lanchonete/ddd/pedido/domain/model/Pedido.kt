@@ -1,6 +1,6 @@
 package br.com.fiap.lanchonete.ddd.pedido.domain.model
 
-import br.com.fiap.lanchonete.ddd.cliente.domain.model.Cliente
+import br.com.fiap.lanchonete.ddd.cliente.domain.entities.Cliente
 import br.com.fiap.lanchonete.ddd.pedido.domain.model.enums.StatusPedido
 import br.com.fiap.lanchonete.ddd.produto.domain.model.Produto
 import jakarta.persistence.CascadeType

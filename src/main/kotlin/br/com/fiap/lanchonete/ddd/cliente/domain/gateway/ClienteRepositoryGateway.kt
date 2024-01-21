@@ -1,10 +1,10 @@
-package br.com.fiap.lanchonete.ddd.cliente.domain.repository
+package br.com.fiap.lanchonete.ddd.cliente.domain.gateway
 
-import br.com.fiap.lanchonete.ddd.cliente.domain.model.Cliente
+import br.com.fiap.lanchonete.ddd.cliente.domain.entities.Cliente
 import org.springframework.data.repository.NoRepositoryBean
 
 @NoRepositoryBean
-interface ClienteRepository {
+interface ClienteRepositoryGateway {
     fun save(cliente: Cliente): Cliente
     fun findByCpf(cpf: String): Cliente?
     fun existsByCpf(cpf: String): Boolean

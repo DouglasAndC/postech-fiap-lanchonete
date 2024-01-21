@@ -1,9 +1,9 @@
 package br.com.fiap.lanchonete.ddd.cliente.infrastructure.repository
 
-import br.com.fiap.lanchonete.ddd.cliente.domain.model.Cliente
-import br.com.fiap.lanchonete.ddd.cliente.domain.repository.ClienteRepository
+import br.com.fiap.lanchonete.ddd.cliente.domain.entities.Cliente
+import br.com.fiap.lanchonete.ddd.cliente.domain.gateway.ClienteRepositoryGateway
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface ClienteJPARepository : ClienteRepository, JpaRepository<Cliente, Long>
+interface ClienteJPARepository : ClienteRepositoryGateway, JpaRepository<Cliente, Long>
