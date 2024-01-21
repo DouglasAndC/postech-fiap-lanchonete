@@ -1,42 +1,42 @@
 package br.com.fiap.lanchonete.ddd.produto.domain.service
 
-import br.com.fiap.lanchonete.ddd.produto.domain.model.Produto
-import br.com.fiap.lanchonete.ddd.produto.domain.model.enums.CategoriaEnum
-import br.com.fiap.lanchonete.ddd.produto.domain.model.exception.ProdutoExceptionEnum
-import br.com.fiap.lanchonete.ddd.produto.domain.repository.ProdutoRepository
+import br.com.fiap.lanchonete.ddd.produto.application.gateway.ProdutoRepositoryGateway
+import br.com.fiap.lanchonete.ddd.produto.domain.entities.Produto
+import br.com.fiap.lanchonete.ddd.produto.domain.entities.enums.CategoriaEnum
+import br.com.fiap.lanchonete.ddd.produto.domain.entities.exception.ProdutoExceptionEnum
 import br.com.fiap.lanchonete.exception.BusinessException
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
-class ProdutoDomainService(
-        private val produtoRepository: ProdutoRepository
+class ProdutoDomainUseCase(
+        private val produtoRepositoryGateway: ProdutoRepositoryGateway
 ) {
     fun get(id: Long) =
-            produtoRepository.findProdutoById(id) ?:
+            produtoRepositoryGateway.findProdutoById(id) ?:
             throw BusinessException(ProdutoExceptionEnum.PRODUTO_NOT_FOUND, messages = listOf("Produto com id=$id"))
 
-    fun create(produto: Produto) = produtoRepository.save(produto)
+    fun create(produto: Produto) = produtoRepositoryGateway.save(produto)
 
-    fun delete(id: Long) = produtoRepository.findProdutoById(id)?.let {
-        produtoRepository.delete(it)
+    fun delete(id: Long) = produtoRepositoryGateway.findProdutoById(id)?.let {
+        produtoRepositoryGateway.delete(it)
     } ?: throw BusinessException(ProdutoExceptionEnum.PRODUTO_NOT_FOUND, messages = listOf("Produto com id=$id"))
 
     fun put(id: Long, produto: Produto) =
-         produtoRepository.findProdutoById(id)?.let {
-            produtoRepository.save(it)
+         produtoRepositoryGateway.findProdutoById(id)?.let {
+            produtoRepositoryGateway.save(it)
         } ?: throw BusinessException(ProdutoExceptionEnum.PRODUTO_NOT_FOUND, messages = listOf("Produto com id=$id"))
 
     fun getByCategoria(categoria: CategoriaEnum, pageable: Pageable) =
-            produtoRepository.findProdutoByCategoria(categoria, pageable).also {
+            produtoRepositoryGateway.findProdutoByCategoria(categoria, pageable).also {
                 if (it.isEmpty) throw BusinessException(ProdutoExceptionEnum.CATEGORIA_NOT_FOUND,
                     messages = listOf("Produto com categoria=$categoria"))
             }
 
     fun alterarImagem(id: Long, imagens: List<String>): Produto =
-        produtoRepository.findProdutoById(id)?.let {
+        produtoRepositoryGateway.findProdutoById(id)?.let {
             it.imagens = imagens
-            produtoRepository.save(it)
+            produtoRepositoryGateway.save(it)
         } ?: throw BusinessException(ProdutoExceptionEnum.PRODUTO_NOT_FOUND, messages = listOf("Produto com id=$id"))
 
 }

@@ -1,12 +1,12 @@
-package br.com.fiap.lanchonete.ddd.produto.domain.repository
+package br.com.fiap.lanchonete.ddd.produto.application.gateway
 
-import br.com.fiap.lanchonete.ddd.produto.domain.model.Produto
-import br.com.fiap.lanchonete.ddd.produto.domain.model.enums.CategoriaEnum
+import br.com.fiap.lanchonete.ddd.produto.domain.entities.Produto
+import br.com.fiap.lanchonete.ddd.produto.domain.entities.enums.CategoriaEnum
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
 
-interface ProdutoRepository {
+interface ProdutoRepositoryGateway {
 
     fun findProdutoById(id:Long): Produto?
 

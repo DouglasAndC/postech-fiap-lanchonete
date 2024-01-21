@@ -5,7 +5,7 @@ import br.com.fiap.lanchonete.ddd.pedido.application.dto.response.ComboResponse
 import br.com.fiap.lanchonete.ddd.pedido.application.dto.response.PedidoResponse
 import br.com.fiap.lanchonete.ddd.pedido.domain.entities.Combo
 import br.com.fiap.lanchonete.ddd.pedido.domain.entities.Pedido
-import br.com.fiap.lanchonete.ddd.produto.domain.model.extensions.toDTO
+import br.com.fiap.lanchonete.ddd.produto.domain.entities.extensions.toDTO
 
 fun Pedido.toDTO() = PedidoResponse(
     id = this.id,

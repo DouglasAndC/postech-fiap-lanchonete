@@ -1,4 +1,4 @@
-package br.com.fiap.lanchonete.ddd.produto.domain.model.enums
+package br.com.fiap.lanchonete.ddd.produto.domain.entities.enums
 
 enum class CategoriaEnum {
     LANCHE,

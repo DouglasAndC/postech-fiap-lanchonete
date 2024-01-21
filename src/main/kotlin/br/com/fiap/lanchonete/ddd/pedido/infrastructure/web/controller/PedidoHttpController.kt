@@ -19,7 +19,7 @@ import org.springframework.web.util.UriComponentsBuilder
 
 @RestController
 @RequestMapping("/pedidos")
-class PedidoController(private val pedidoApplicationController: PedidoApplicationController) {
+class PedidoHttpController(private val pedidoApplicationController: PedidoApplicationController) {
 
     @PostMapping
     fun create(@Valid @RequestBody pedidoRequest: PedidoRequest,

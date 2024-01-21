@@ -1,8 +1,8 @@
 package br.com.fiap.lanchonete.ddd.produto.domain.service
 
-import br.com.fiap.lanchonete.ddd.produto.domain.model.Produto
-import br.com.fiap.lanchonete.ddd.produto.domain.model.enums.CategoriaEnum
-import br.com.fiap.lanchonete.ddd.produto.domain.repository.ProdutoRepository
+import br.com.fiap.lanchonete.ddd.produto.application.gateway.ProdutoRepositoryGateway
+import br.com.fiap.lanchonete.ddd.produto.domain.entities.Produto
+import br.com.fiap.lanchonete.ddd.produto.domain.entities.enums.CategoriaEnum
 import br.com.fiap.lanchonete.exception.BusinessException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -19,13 +19,13 @@ import org.springframework.data.domain.PageRequest
 import java.math.BigDecimal
 
 @ExtendWith(MockitoExtension::class)
-class ProdutoDomainServiceTest {
+class ProdutoDomainUseCaseTest {
 
     @Mock
-    lateinit var produtoRepository: ProdutoRepository
+    lateinit var produtoRepositoryGateway: ProdutoRepositoryGateway
 
     @InjectMocks
-    lateinit var produtoDomainService: ProdutoDomainService
+    lateinit var produtoDomainUseCase: ProdutoDomainUseCase
 
     val produto: Produto = Produto(
             id = 1L,
@@ -39,10 +39,10 @@ class ProdutoDomainServiceTest {
     @Test
     fun `deve pegar produto`() {
 
-        `when`(produtoRepository.findProdutoById(any(Long::class.java)))
+        `when`(produtoRepositoryGateway.findProdutoById(any(Long::class.java)))
                 .thenReturn(produto)
 
-        val resultado = produtoDomainService.get(1L)
+        val resultado = produtoDomainUseCase.get(1L)
 
         assertsProduto(resultado)
 
@@ -50,12 +50,12 @@ class ProdutoDomainServiceTest {
 
     @Test
     fun `deve criar produto`() {
-        `when`(produtoRepository.save(produto)).thenReturn(produto)
+        `when`(produtoRepositoryGateway.save(produto)).thenReturn(produto)
 
-        val resultado = produtoDomainService.create(
+        val resultado = produtoDomainUseCase.create(
                 produto)
 
-        verify(produtoRepository).save(produto)
+        verify(produtoRepositoryGateway).save(produto)
 
         assertsProduto(resultado)
 
@@ -64,32 +64,32 @@ class ProdutoDomainServiceTest {
     @Test
     fun `deletar produto existente deve ter sucesso`() {
 
-        `when`(produto.id?.let { produtoRepository.findProdutoById(it) }).thenReturn(produto)
+        `when`(produto.id?.let { produtoRepositoryGateway.findProdutoById(it) }).thenReturn(produto)
 
-        produto.id?.let { produtoDomainService.delete(it) }
+        produto.id?.let { produtoDomainUseCase.delete(it) }
 
-        verify(produtoRepository).delete(produto)
+        verify(produtoRepositoryGateway).delete(produto)
     }
 
     @Test
     fun `deletar produto nao existente deve lancar excecao`() {
         val nonExistingProductId = 2L
 
-        `when`(produtoRepository.findProdutoById(nonExistingProductId)).thenReturn(null)
+        `when`(produtoRepositoryGateway.findProdutoById(nonExistingProductId)).thenReturn(null)
 
         assertThrows<BusinessException> {
-            produtoDomainService.delete(nonExistingProductId)
+            produtoDomainUseCase.delete(nonExistingProductId)
         }
     }
 
     @Test
     fun `atualizar produto existente deve ter sucesso`() {
 
-        `when`(produto.id?.let { produtoRepository.findProdutoById(it) }).thenReturn(produto)
+        `when`(produto.id?.let { produtoRepositoryGateway.findProdutoById(it) }).thenReturn(produto)
 
-        `when`(produtoRepository.save(produto)).thenReturn(produto)
+        `when`(produtoRepositoryGateway.save(produto)).thenReturn(produto)
 
-        val resultado = produto.id?.let { produtoDomainService.put(it, produto) }
+        val resultado = produto.id?.let { produtoDomainUseCase.put(it, produto) }
 
         if (resultado != null) {
             assertsProduto(resultado)
@@ -100,11 +100,11 @@ class ProdutoDomainServiceTest {
     fun `atualizar produto nao existente deve lancar excecao`() {
         val idProdutoNaoExistente = 2L
 
-        `when`(produtoRepository.findProdutoById(idProdutoNaoExistente)).thenReturn(null)
+        `when`(produtoRepositoryGateway.findProdutoById(idProdutoNaoExistente)).thenReturn(null)
 
 
         assertThrows<BusinessException> {
-            produtoDomainService.put(idProdutoNaoExistente, produto)
+            produtoDomainUseCase.put(idProdutoNaoExistente, produto)
         }
     }
 
@@ -117,9 +117,9 @@ class ProdutoDomainServiceTest {
         )
         val pageableProdutos = PageImpl(produtos, pageable, produtos.size.toLong())
 
-        `when`(produtoRepository.findProdutoByCategoria(produto.categoria, pageable)).thenReturn(pageableProdutos)
+        `when`(produtoRepositoryGateway.findProdutoByCategoria(produto.categoria, pageable)).thenReturn(pageableProdutos)
 
-        val resultado = produtoDomainService.getByCategoria(produto.categoria, pageable)
+        val resultado = produtoDomainUseCase.getByCategoria(produto.categoria, pageable)
 
         assertEquals(2, resultado.totalElements)
     }
@@ -129,10 +129,10 @@ class ProdutoDomainServiceTest {
         val categoriaNaoExistente = CategoriaEnum.SOBREMESA
         val pageable = PageRequest.of(0, 10)
 
-        `when`(produtoRepository.findProdutoByCategoria(categoriaNaoExistente, pageable)).thenReturn(PageImpl(emptyList()))
+        `when`(produtoRepositoryGateway.findProdutoByCategoria(categoriaNaoExistente, pageable)).thenReturn(PageImpl(emptyList()))
 
         assertThrows<BusinessException> {
-            produtoDomainService.getByCategoria(categoriaNaoExistente, pageable)
+            produtoDomainUseCase.getByCategoria(categoriaNaoExistente, pageable)
         }
     }
 
@@ -141,10 +141,10 @@ class ProdutoDomainServiceTest {
 
         val imagens = listOf("imagem1", "imagem2")
 
-        `when`(produto.id?.let { produtoRepository.findProdutoById(it) }).thenReturn(produto)
-        `when`(produtoRepository.save(produto)).thenReturn(produto.copy(imagens = imagens))
+        `when`(produto.id?.let { produtoRepositoryGateway.findProdutoById(it) }).thenReturn(produto)
+        `when`(produtoRepositoryGateway.save(produto)).thenReturn(produto.copy(imagens = imagens))
 
-        val resultado = produto.id?.let { produtoDomainService.alterarImagem(it, imagens) }
+        val resultado = produto.id?.let { produtoDomainUseCase.alterarImagem(it, imagens) }
 
         if (resultado != null) {
             assertsProduto(resultado)
@@ -156,10 +156,10 @@ class ProdutoDomainServiceTest {
 
         val imagens = listOf("imagem1", "imagem2")
 
-        `when`(produto.id?.let { produtoRepository.findProdutoById(it) }).thenReturn(null)
+        `when`(produto.id?.let { produtoRepositoryGateway.findProdutoById(it) }).thenReturn(null)
 
         assertThrows<BusinessException> {
-            produto.id?.let { produtoDomainService.alterarImagem(it, imagens) }
+            produto.id?.let { produtoDomainUseCase.alterarImagem(it, imagens) }
         }
     }
 
