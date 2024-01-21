@@ -1,6 +1,6 @@
 import br.com.fiap.lanchonete.ddd.cliente.application.dto.request.ClienteRequest
-import br.com.fiap.lanchonete.ddd.cliente.domain.model.Cliente
-import br.com.fiap.lanchonete.ddd.cliente.domain.service.ClienteDomainService
+import br.com.fiap.lanchonete.ddd.cliente.domain.entities.Cliente
+import br.com.fiap.lanchonete.ddd.cliente.domain.service.ClienteDomainUseCase
 import br.com.fiap.lanchonete.ddd.pedido.application.dto.request.PedidoRequest
 import br.com.fiap.lanchonete.ddd.pedido.application.service.PedidoApplicationService
 import br.com.fiap.lanchonete.ddd.pedido.domain.model.Combo
@@ -36,7 +36,7 @@ class PedidoApplicationServiceTest {
     private lateinit var produtoDomainService: ProdutoDomainService
 
     @Mock
-    private lateinit var clienteDomainService: ClienteDomainService
+    private lateinit var clienteDomainUseCase: ClienteDomainUseCase
 
     @InjectMocks
     private lateinit var pedidoApplicationService: PedidoApplicationService

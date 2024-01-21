@@ -1,14 +1,14 @@
 package br.com.fiap.lanchonete.ddd.cliente.domain.service
 
+import br.com.fiap.lanchonete.ddd.cliente.domain.entities.Cliente
 import br.com.fiap.lanchonete.ddd.cliente.domain.exception.ClienteExceptionEnum
-import br.com.fiap.lanchonete.ddd.cliente.domain.model.Cliente
-import br.com.fiap.lanchonete.ddd.cliente.domain.repository.ClienteRepository
+import br.com.fiap.lanchonete.ddd.cliente.domain.gateway.ClienteRepositoryGateway
 import br.com.fiap.lanchonete.exception.BusinessException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-class ClienteDomainService(private val clienteRepository: ClienteRepository) {
+class ClienteDomainUseCase(private val clienteRepositoryGateway: ClienteRepositoryGateway) {
 
     @Transactional
     fun create(cliente: Cliente): Cliente {
@@ -21,14 +21,14 @@ class ClienteDomainService(private val clienteRepository: ClienteRepository) {
             throw BusinessException(ClienteExceptionEnum.CLIENTE_ALREADY_EXISTS_EMAIL)
         }
 
-        return clienteRepository.save(cliente)
+        return clienteRepositoryGateway.save(cliente)
     }
 
-    fun findByCpf(cpf: String) = clienteRepository.findByCpf(cpf)
+    fun findByCpf(cpf: String) = clienteRepositoryGateway.findByCpf(cpf)
         ?: throw BusinessException(ClienteExceptionEnum.CLIENTE_NOT_FOUND)
 
-    fun clienteExists(cliente: Cliente?) = cliente?.cpf?.let { clienteRepository.existsByCpf(it) }
+    fun clienteExists(cliente: Cliente?) = cliente?.cpf?.let { clienteRepositoryGateway.existsByCpf(it) }
 
-    fun emailExists(cliente: Cliente) = cliente.email?.let { clienteRepository.existsByEmail(it) }
+    fun emailExists(cliente: Cliente) = cliente.email?.let { clienteRepositoryGateway.existsByEmail(it) }
 
 }

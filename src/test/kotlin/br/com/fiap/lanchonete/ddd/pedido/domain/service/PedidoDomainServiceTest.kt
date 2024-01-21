@@ -1,6 +1,6 @@
 package br.com.fiap.lanchonete.ddd.pedido.domain.service
 
-import br.com.fiap.lanchonete.ddd.cliente.domain.model.Cliente
+import br.com.fiap.lanchonete.ddd.cliente.domain.entities.Cliente
 import br.com.fiap.lanchonete.ddd.pedido.domain.model.Combo
 import br.com.fiap.lanchonete.ddd.pedido.domain.model.Pedido
 import br.com.fiap.lanchonete.ddd.pedido.domain.model.enums.StatusPedido
