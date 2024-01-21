@@ -1,6 +1,6 @@
 package br.com.fiap.lanchonete.ddd.produto.application.dto.request
 
-import br.com.fiap.lanchonete.ddd.produto.domain.model.enums.CategoriaEnum
+import br.com.fiap.lanchonete.ddd.produto.domain.entities.enums.CategoriaEnum
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import java.math.BigDecimal
