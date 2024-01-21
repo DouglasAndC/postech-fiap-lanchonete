@@ -6,6 +6,8 @@ import br.com.fiap.lanchonete.ddd.produto.domain.entities.Produto
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
@@ -19,15 +21,16 @@ import java.math.BigDecimal
 
 @Entity
 data class Pedido(
-        @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pedido_id_seq")
     @SequenceGenerator(name = "pedido_id_seq", sequenceName = "pedido_id_seq", allocationSize = 1)
     var id: Long? = null,
-        var status: StatusPedido?,
-        @ManyToOne
+    @Enumerated(EnumType.STRING)
+    var status: StatusPedido?,
+    @ManyToOne
     @JoinColumn(name = "cliente_id")
     val cliente: Cliente? = null,
-        @OneToMany(mappedBy = "pedido", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @OneToMany(mappedBy = "pedido", cascade = [CascadeType.ALL], orphanRemoval = true)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var produtos: MutableList<Combo> = mutableListOf(),
         @Column(precision = 15, scale = 2)
