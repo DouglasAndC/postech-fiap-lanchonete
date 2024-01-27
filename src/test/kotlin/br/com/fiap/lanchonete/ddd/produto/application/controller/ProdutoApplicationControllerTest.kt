@@ -4,7 +4,7 @@ import br.com.fiap.lanchonete.ddd.produto.application.dto.request.ProdutoRequest
 import br.com.fiap.lanchonete.ddd.produto.application.dto.response.ProdutoResponse
 import br.com.fiap.lanchonete.ddd.produto.domain.entities.Produto
 import br.com.fiap.lanchonete.ddd.produto.domain.entities.enums.CategoriaEnum
-import br.com.fiap.lanchonete.ddd.produto.domain.service.ProdutoDomainUseCase
+import br.com.fiap.lanchonete.ddd.produto.domain.usecases.ProdutoDomainUseCase
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
