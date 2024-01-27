@@ -2,13 +2,15 @@ package br.com.fiap.lanchonete.ddd.pedido.application.controller
 
 import br.com.fiap.lanchonete.ddd.cliente.domain.usecases.ClienteDomainUseCase
 import br.com.fiap.lanchonete.ddd.pedido.application.dto.request.PedidoRequest
+import br.com.fiap.lanchonete.ddd.pedido.application.dto.response.PedidoPagamentoStatusResponse
 import br.com.fiap.lanchonete.ddd.pedido.application.dto.response.PedidoResponse
 import br.com.fiap.lanchonete.ddd.pedido.domain.entities.Combo
 import br.com.fiap.lanchonete.ddd.pedido.domain.entities.Pedido
 import br.com.fiap.lanchonete.ddd.pedido.domain.entities.enums.StatusPedido
 import br.com.fiap.lanchonete.ddd.pedido.domain.entities.extension.toDTO
+import br.com.fiap.lanchonete.ddd.pedido.domain.entities.extension.toStatusDTO
 import br.com.fiap.lanchonete.ddd.pedido.domain.usecases.PedidoDomainUseCase
-import br.com.fiap.lanchonete.ddd.produto.domain.service.ProdutoDomainUseCase
+import br.com.fiap.lanchonete.ddd.produto.domain.usecases.ProdutoDomainUseCase
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
@@ -46,4 +48,6 @@ class PedidoApplicationController(private val pedidoDomainUseCase: PedidoDomainU
     fun checkout(id: Long): PedidoResponse =
             pedidoDomainUseCase.checkout(id).toDTO()
 
+    fun getStatusById(id: Long): PedidoPagamentoStatusResponse? =
+        pedidoDomainUseCase.findPedidoById(id).toStatusDTO()
 }

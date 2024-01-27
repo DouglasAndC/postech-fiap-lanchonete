@@ -12,17 +12,23 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 @Transactional(readOnly = true)
 class PedidoDomainUseCase(private val pedidoRepositoryGateway: PedidoRepositoryGateway) {
+
+    fun findPedidoById(id: Long) =
+        pedidoRepositoryGateway.findPedidoById(id)
+        ?: throw BusinessException(PedidoExceptionEnum.PEDIDO_NOT_FOUND)
+
     @Transactional
     fun create(pedido: Pedido) = pedidoRepositoryGateway.save(pedido)
     fun getAll(pageable: Pageable) = pedidoRepositoryGateway.findAll(pageable)
     @Transactional
     fun checkout(id: Long) =
-        pedidoRepositoryGateway.findPedidoById(id)?.also {
+        findPedidoById(id).also {
             if(it.status == StatusPedido.RECEBIDO){
                 it.status = StatusPedido.EM_PREPARACAO
                 pedidoRepositoryGateway.save(it)
             }else{
                 throw BusinessException(PedidoExceptionEnum.PEDIDO_STATUS_INVALID)
             }
-        }  ?: throw BusinessException(PedidoExceptionEnum.PEDIDO_NOT_FOUND)
+        }
+
 }

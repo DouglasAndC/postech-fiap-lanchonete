@@ -2,6 +2,7 @@ package br.com.fiap.lanchonete.ddd.pedido.infrastructure.web.controller
 
 import br.com.fiap.lanchonete.ddd.pedido.application.controller.PedidoApplicationController
 import br.com.fiap.lanchonete.ddd.pedido.application.dto.request.PedidoRequest
+import br.com.fiap.lanchonete.ddd.pedido.application.dto.response.PedidoPagamentoStatusResponse
 import br.com.fiap.lanchonete.ddd.pedido.application.dto.response.PedidoResponse
 import jakarta.validation.Valid
 import org.springframework.data.domain.Page
@@ -29,6 +30,12 @@ class PedidoHttpController(private val pedidoApplicationController: PedidoApplic
         val uri = uriBuilder.path("/api/v1/pedido/{id}").buildAndExpand(pedidoCreated?.id).toUri()
         return ResponseEntity.created(uri).body(pedidoCreated)
     }
+
+    @GetMapping("/{id}")
+    fun getStatusById(@PathVariable(name = "id") id: Long): ResponseEntity<PedidoPagamentoStatusResponse> =
+        ResponseEntity(pedidoApplicationController.getStatusById(id), HttpStatus.OK)
+
+
     @GetMapping
     fun getAll(pageable: Pageable): ResponseEntity<Page<PedidoResponse>> =
         ResponseEntity(pedidoApplicationController.getAll(pageable), HttpStatus.OK)
