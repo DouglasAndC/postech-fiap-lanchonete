@@ -14,35 +14,38 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Set up Docker
-        uses: docker/setup-docker@v2
+        uses: docker/setup-buildx-action@v1
         with:
-          dockerfile: Dockerfile
           context: .
-
-      - name: Build Docker Image
-        run: docker build -t your-docker-registry/your-image-name:latest .
-
-      - name: Login to Docker Registry
-        run: echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin your-docker-registry
-
-      - name: Push Docker Image
-        run: docker push your-docker-registry/your-image-name:latest
 
       - name: Setup AWS EKS
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: your-aws-region
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: us-east-1
+
+      - name: Get authentication token
+        run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.ECR_HOST }}
+
+      - name: Build Docker Image
+        run: docker build -t lanchonete .
+
+      - name: Create tag repository
+        run: docker tag lanchonete:latest ${{ secrets.ECR_HOST }}/lanchonete:latest
+
+      - name: Push Docker Image
+        run: docker push ${{ secrets.ECR_HOST }}/lanchonete:latest
 
       - name: Configure kubectl
-        run: aws eks update-kubeconfig --name your-eks-cluster-name
+        run: aws eks update-kubeconfig --name lanchonete-cluster
 
       - name: Deploy to EKS using Helm
         run: |
           helm upgrade --install \
-            your-release-name \
-            your-helm-chart-directory \
-            --namespace your-namespace \
-            --set image.repository=your-docker-registry/your-image-name \
+            lanchonete-cluster \
+            manifest/lanchonete \
+            --namespace default \
+            --set image.repository=${{ secrets.ECR_HOST }}/lanchonete \
             --set image.tag=latest
