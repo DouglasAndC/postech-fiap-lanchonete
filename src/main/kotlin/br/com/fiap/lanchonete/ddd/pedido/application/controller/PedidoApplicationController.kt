@@ -23,10 +23,9 @@ import org.springframework.stereotype.Service
 class PedidoApplicationController(private val pedidoDomainUseCase: PedidoDomainUseCase,
                                   private val produtoDomainUseCase: ProdutoDomainUseCase,
                                   private val clienteDomainUseCase: ClienteDomainUseCase,
-                                  @Value("\${mercado-pago.enabled}") private val mercadoPagoEnabled: Boolean,
                                   private val qrCodeDomainUseCase: QrCodeDomainUseCase) {
 
-
+    @Value("\${mercado-pago.enabled}") private val mercadoPagoEnabled: Boolean = false
 
     fun create(pedidoRequest: PedidoRequest): PedidoResponse? {
 
@@ -73,7 +72,6 @@ class PedidoApplicationController(private val pedidoDomainUseCase: PedidoDomainU
                 pedidoDomainUseCase.closePedidoPagamento(pedido, it)
             }
         } else {
-            // Execute o fechamento do pedido mesmo com o mercadoPago desativado
             pedidoDomainUseCase.closePedidoPagamento(pedido, null)
         }
     }

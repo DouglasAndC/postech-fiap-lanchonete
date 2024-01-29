@@ -43,14 +43,14 @@ class PedidoDomainUseCase(private val pedidoRepositoryGateway: PedidoRepositoryG
         return updatePedido(pedido)
     }
 
-    fun validatePedidoPagamento(orderResponse: GetOrderResponse): Boolean{
-        return orderResponse.status == GetOrderResponse.STATUS_CLOSED &&
+    fun validatePedidoPagamento(orderResponse: GetOrderResponse?): Boolean{
+        return orderResponse?.status == GetOrderResponse.STATUS_CLOSED &&
                 orderResponse.orderStatus == GetOrderResponse.PAID_STATUS
     }
 
     @Transactional
     fun closePedidoPagamento(pedido: Pedido, orderResponse: GetOrderResponse?){
-        if(orderResponse?.let { validatePedidoPagamento(it) } == true){
+        if(validatePedidoPagamento(orderResponse)){
             pedido.pagamento = StatusPagamento.APROVADO
         } else {
             pedido.pagamento = StatusPagamento.RECUSADO

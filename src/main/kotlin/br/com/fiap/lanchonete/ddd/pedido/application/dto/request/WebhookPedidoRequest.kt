@@ -2,7 +2,6 @@ package br.com.fiap.lanchonete.ddd.pedido.application.dto.request
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonProperty
-import java.util.Date
 
 data class WebhookPedidoRequest(
     val action: String,
@@ -11,7 +10,7 @@ data class WebhookPedidoRequest(
     val data: Data,
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
     @JsonProperty("date_created")
-    val dateCreated: Date,
+    val dateCreated: String,
     val id: String,
     @JsonProperty("live_mode")
     val liveMode: Boolean,
