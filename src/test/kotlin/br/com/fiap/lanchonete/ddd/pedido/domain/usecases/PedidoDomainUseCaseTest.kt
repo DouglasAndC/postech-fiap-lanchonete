@@ -6,8 +6,11 @@ import br.com.fiap.lanchonete.ddd.pedido.domain.entities.Combo
 import br.com.fiap.lanchonete.ddd.pedido.domain.entities.Pedido
 import br.com.fiap.lanchonete.ddd.pedido.domain.entities.enums.StatusPagamento
 import br.com.fiap.lanchonete.ddd.pedido.domain.entities.enums.StatusPedido
+import br.com.fiap.lanchonete.ddd.pedido.infrastructure.web.client.dto.GetOrderResponse
 import br.com.fiap.lanchonete.exception.BusinessException
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
@@ -28,9 +31,12 @@ class PedidoDomainUseCaseTest {
     @Mock
     lateinit var pedidoRepositoryGateway: PedidoRepositoryGateway
 
-    private val cliente = Cliente(1L, "123.456.789-09", "Cliente Teste", "cliente@teste.com")
-
-    private val pedido = Pedido(1L, StatusPedido.RECEBIDO , StatusPagamento.AGUARDANDO_APROVACAO, cliente, emptyList<Combo>().toMutableList())
+    private val cliente =
+        Cliente(1L, "123.456.789-09", "Cliente Teste", "cliente@teste.com")
+    private val pedido =
+        Pedido(1L, StatusPedido.RECEBIDO , StatusPagamento.AGUARDANDO_APROVACAO, cliente, emptyList<Combo>().toMutableList())
+    private val orderResponse =
+        GetOrderResponse(status = GetOrderResponse.STATUS_CLOSED, externalReference = "1", orderStatus = "")
 
 
     @Test
@@ -56,14 +62,24 @@ class PedidoDomainUseCaseTest {
     }
 
     @Test
-    fun `deve alterar status para EM_PREPARACAO se o pedido estiver RECEBIDO`() {
-
-        `when`(pedidoRepositoryGateway.findPedidoById(pedido.id!!)).thenReturn(pedido)
-        `when`(pedidoRepositoryGateway.save(pedido)).thenReturn(pedido.copy(status = StatusPedido.RECEBIDO))
+    fun `deve alterar status para EM_PREPARACAO se o pedido estiver RECEBIDO e pagamento APROVADO`() {
+        val pedidoRecebido = pedido.copy(status = StatusPedido.RECEBIDO, pagamento = StatusPagamento.APROVADO)
+        `when`(pedidoRepositoryGateway.findPedidoById(pedido.id!!)).thenReturn(pedidoRecebido)
+        `when`(pedidoRepositoryGateway.save(pedidoRecebido)).thenReturn(pedidoRecebido.copy(status = StatusPedido.EM_PREPARACAO))
 
         val resultado = pedidoDomainUseCase.checkout(pedido.id!!)
 
-        assertsPedido(resultado)
+        assertEquals(StatusPedido.EM_PREPARACAO, resultado.status)
+    }
+
+    @Test
+    fun `deve alterar status para EM_PREPARACAO se o pedido estiver RECEBIDO e pagamento RECUSADO`() {
+        val pedidoRecebido = pedido.copy(status = StatusPedido.RECEBIDO, pagamento = StatusPagamento.RECUSADO)
+        `when`(pedidoRepositoryGateway.findPedidoById(pedido.id!!)).thenReturn(pedidoRecebido)
+
+        assertThrows <BusinessException> {
+            pedidoDomainUseCase.checkout(pedido.id!!)
+        }
     }
 
     @Test
@@ -99,12 +115,31 @@ class PedidoDomainUseCaseTest {
         assertEquals(novoStatus, pedidoDomainUseCase.updateStatus(pedido, novoStatus).status)
     }
 
+    @Test
+    fun `deve validar pedido com pagamento aprovado`() {
+        val resultado = pedidoDomainUseCase
+            .validatePedidoPagamento(orderResponse.copy(orderStatus = GetOrderResponse.PAID_STATUS))
+        assertTrue(resultado)
+    }
 
+    @Test
+    fun `deve fechar pedido com pagamento aprovado`() {
+        pedidoDomainUseCase
+            .closePedidoPagamento(pedido, orderResponse.copy(orderStatus = GetOrderResponse.PAID_STATUS))
+        assertEquals(StatusPagamento.APROVADO, pedido.pagamento)
+    }
 
+    @Test
+    fun `nao deve validar pedido com pagamento nao aprovado`() {
+        val resultado = pedidoDomainUseCase
+            .validatePedidoPagamento(orderResponse.copy(orderStatus = "status_foo"))
+        assertFalse(resultado)
+    }
 
-    private fun assertsPedido(response: Pedido) {
-        assertEquals(response.id, pedido.id)
-        assertEquals(response.produtos, pedido.produtos)
-        assertEquals(response.cliente, pedido.cliente)
+    @Test
+    fun `deve recusar pedido com pagamento nao aprovado`() {
+        pedidoDomainUseCase
+            .closePedidoPagamento(pedido, orderResponse.copy(orderStatus = "status_foo"))
+        assertEquals(StatusPagamento.RECUSADO, pedido.pagamento)
     }
 }

@@ -27,6 +27,9 @@ class PedidoDomainUseCase(private val pedidoRepositoryGateway: PedidoRepositoryG
     fun checkout(id: Long) =
         findPedidoById(id).also {
             if(it.status == StatusPedido.RECEBIDO){
+                if(it.pagamento != StatusPagamento.APROVADO){
+                    throw BusinessException(PedidoExceptionEnum.PEDIDO_STATUS_PAGAMENTO_INVALID)
+                }
                 it.status = StatusPedido.EM_PREPARACAO
                 pedidoRepositoryGateway.save(it)
             }else{
