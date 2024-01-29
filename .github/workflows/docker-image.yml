@@ -34,7 +34,9 @@ jobs:
         run: docker build -t lanchonete .
 
       - name: Create tag repository
-        run: docker tag lanchonete:latest ${{ secrets.ECR_HOST }}/lanchonete:latest
+        run: |
+          version=$(helm show chart ./manifest/lanchonete/Chart.yaml | grep "^version:" | awk '{print $2}')
+          docker tag lanchonete:latest ${{ secrets.ECR_HOST }}/lanchonete:${version}
 
       - name: Push Docker Image
         run: docker push ${{ secrets.ECR_HOST }}/lanchonete:latest
@@ -49,4 +51,4 @@ jobs:
             manifest/lanchonete \
             --namespace default \
             --set image.repository=${{ secrets.ECR_HOST }}/lanchonete \
-            --set image.tag=latest
+            --set image.tag=${version}
