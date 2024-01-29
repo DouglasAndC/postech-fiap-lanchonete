@@ -3,7 +3,9 @@ package br.com.fiap.lanchonete.ddd.pedido.application.controller
 import br.com.fiap.lanchonete.ddd.cliente.application.dto.request.ClienteRequest
 import br.com.fiap.lanchonete.ddd.cliente.domain.entities.Cliente
 import br.com.fiap.lanchonete.ddd.cliente.domain.usecases.ClienteDomainUseCase
+import br.com.fiap.lanchonete.ddd.pedido.application.dto.request.Data
 import br.com.fiap.lanchonete.ddd.pedido.application.dto.request.PedidoRequest
+import br.com.fiap.lanchonete.ddd.pedido.application.dto.request.WebhookPedidoRequest
 import br.com.fiap.lanchonete.ddd.pedido.domain.entities.Combo
 import br.com.fiap.lanchonete.ddd.pedido.domain.entities.Pedido
 import br.com.fiap.lanchonete.ddd.pedido.domain.entities.enums.StatusPagamento
@@ -25,6 +27,7 @@ import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
@@ -45,8 +48,6 @@ class PedidoApplicationControllerTest {
 
     @Mock
     private lateinit var qrCodeDomainUseCase: QrCodeDomainUseCase
-
-    private var mercadoPagoEnabled = false
 
     @InjectMocks
     private lateinit var pedidoApplicationController: PedidoApplicationController
@@ -153,6 +154,51 @@ class PedidoApplicationControllerTest {
 
         assertEquals(pedido.toStatusDTO(), resultado)
     }
+
+    @Test
+    fun `deve atualizar o status do pedido com sucesso`() {
+        val pedidoId = 1L
+        val novoStatus = StatusPedido.EM_PREPARACAO
+        val pedido = pedido().copy(id = pedidoId)
+
+        `when`(pedidoDomainUseCase.findPedidoById(pedidoId)).thenReturn(pedido)
+
+        `when`(pedidoDomainUseCase.updateStatus(eq(pedido), eq(novoStatus))).thenReturn(
+            pedido.copy(status = novoStatus)
+        )
+
+        val resultado = pedidoApplicationController.updateStatus(pedidoId, novoStatus)
+
+        assertEquals(novoStatus, resultado.status)
+    }
+
+    @Test
+    fun `deve executar webhook com sucesso quando mercadoPagoEnabled desligado`() {
+        val pedidoId = 1L
+        val orderId = "orderId"
+        val webhookPedidoRequest = criarWebhookPedidoRequest()
+        val pedido = pedido().copy(id = pedidoId)
+
+        `when`(pedidoDomainUseCase.findPedidoById(pedidoId)).thenReturn(pedido)
+
+        pedidoApplicationController.webhook(orderId, webhookPedidoRequest)
+
+        verify(pedidoDomainUseCase).closePedidoPagamento(eq(pedido), eq(null))
+    }
+
+    private fun criarWebhookPedidoRequest(): WebhookPedidoRequest {
+        return WebhookPedidoRequest(
+            "payment.update",
+            "v1",
+            Data("1"),
+            "2021-11-01T02:02:02Z",
+            "1",
+            false,
+            "payment",
+            1
+        )
+    }
+
 
     private fun criarPedidoRequestValido(): PedidoRequest {
         return PedidoRequest(

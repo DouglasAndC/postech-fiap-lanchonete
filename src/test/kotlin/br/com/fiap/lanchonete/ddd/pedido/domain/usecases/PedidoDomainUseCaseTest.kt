@@ -93,14 +93,12 @@ class PedidoDomainUseCaseTest {
         val novoStatus = StatusPedido.EM_PREPARACAO
         val pedido = pedido.copy(id = pedidoId)
 
-        `when`(pedidoRepositoryGateway.findPedidoById(pedidoId)).thenReturn(pedido)
-        `when`(pedidoRepositoryGateway.save(pedido)).thenReturn(
-            pedido.copy(status = novoStatus)
-        )
+        `when`(pedidoRepositoryGateway.save(pedido)).thenReturn(pedido)
 
         assertEquals(StatusPedido.RECEBIDO, pedido.status)
         assertEquals(novoStatus, pedidoDomainUseCase.updateStatus(pedido, novoStatus).status)
     }
+
 
 
 
