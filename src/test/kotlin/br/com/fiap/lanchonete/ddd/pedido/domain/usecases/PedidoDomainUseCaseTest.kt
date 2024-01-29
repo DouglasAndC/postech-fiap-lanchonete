@@ -4,6 +4,7 @@ import br.com.fiap.lanchonete.ddd.cliente.domain.entities.Cliente
 import br.com.fiap.lanchonete.ddd.pedido.application.gateway.PedidoRepositoryGateway
 import br.com.fiap.lanchonete.ddd.pedido.domain.entities.Combo
 import br.com.fiap.lanchonete.ddd.pedido.domain.entities.Pedido
+import br.com.fiap.lanchonete.ddd.pedido.domain.entities.enums.StatusPagamento
 import br.com.fiap.lanchonete.ddd.pedido.domain.entities.enums.StatusPedido
 import br.com.fiap.lanchonete.exception.BusinessException
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -29,7 +30,7 @@ class PedidoDomainUseCaseTest {
 
     private val cliente = Cliente(1L, "123.456.789-09", "Cliente Teste", "cliente@teste.com")
 
-    private val pedido = Pedido(1L, StatusPedido.RECEBIDO ,cliente, emptyList<Combo>().toMutableList())
+    private val pedido = Pedido(1L, StatusPedido.RECEBIDO , StatusPagamento.AGUARDANDO_APROVACAO, cliente, emptyList<Combo>().toMutableList())
 
 
     @Test
@@ -84,6 +85,22 @@ class PedidoDomainUseCaseTest {
             pedidoDomainUseCase.checkout(pedido.id!!)
         }
     }
+
+
+    @Test
+    fun `deve atualizar o status do pedido com sucesso`() {
+        val pedidoId = 1L
+        val novoStatus = StatusPedido.EM_PREPARACAO
+        val pedido = pedido.copy(id = pedidoId)
+
+        `when`(pedidoRepositoryGateway.save(pedido)).thenReturn(pedido)
+
+        assertEquals(StatusPedido.RECEBIDO, pedido.status)
+        assertEquals(novoStatus, pedidoDomainUseCase.updateStatus(pedido, novoStatus).status)
+    }
+
+
+
 
     private fun assertsPedido(response: Pedido) {
         assertEquals(response.id, pedido.id)

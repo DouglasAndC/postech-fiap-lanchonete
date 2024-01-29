@@ -1,14 +1,21 @@
+package br.com.fiap.lanchonete.ddd.pedido.application.controller
+
 import br.com.fiap.lanchonete.ddd.cliente.application.dto.request.ClienteRequest
 import br.com.fiap.lanchonete.ddd.cliente.domain.entities.Cliente
-import br.com.fiap.lanchonete.ddd.pedido.application.controller.PedidoApplicationController
+import br.com.fiap.lanchonete.ddd.cliente.domain.usecases.ClienteDomainUseCase
+import br.com.fiap.lanchonete.ddd.pedido.application.dto.request.Data
 import br.com.fiap.lanchonete.ddd.pedido.application.dto.request.PedidoRequest
+import br.com.fiap.lanchonete.ddd.pedido.application.dto.request.WebhookPedidoRequest
 import br.com.fiap.lanchonete.ddd.pedido.domain.entities.Combo
 import br.com.fiap.lanchonete.ddd.pedido.domain.entities.Pedido
+import br.com.fiap.lanchonete.ddd.pedido.domain.entities.enums.StatusPagamento
 import br.com.fiap.lanchonete.ddd.pedido.domain.entities.enums.StatusPedido
+import br.com.fiap.lanchonete.ddd.pedido.domain.entities.extension.toStatusDTO
 import br.com.fiap.lanchonete.ddd.pedido.domain.usecases.PedidoDomainUseCase
+import br.com.fiap.lanchonete.ddd.pedido.domain.usecases.QrCodeDomainUseCase
 import br.com.fiap.lanchonete.ddd.produto.domain.entities.Produto
 import br.com.fiap.lanchonete.ddd.produto.domain.entities.enums.CategoriaEnum
-import br.com.fiap.lanchonete.ddd.produto.domain.service.ProdutoDomainUseCase
+import br.com.fiap.lanchonete.ddd.produto.domain.usecases.ProdutoDomainUseCase
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -16,12 +23,14 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito
+import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
-import org.mockito.kotlin.anyOrNull
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import java.math.BigDecimal
 
@@ -34,19 +43,26 @@ class PedidoApplicationControllerTest {
     @Mock
     private lateinit var produtoDomainUseCase: ProdutoDomainUseCase
 
+    @Mock
+    private lateinit var clienteDomainUseCase: ClienteDomainUseCase
+
+    @Mock
+    private lateinit var qrCodeDomainUseCase: QrCodeDomainUseCase
+
     @InjectMocks
     private lateinit var pedidoApplicationController: PedidoApplicationController
 
-    private var pedidoRequestValido =
-        PedidoRequest(ClienteRequest("123.456.789-09","João", "cliente@teste.com"), listOf(1L))
-    private var pedido = Pedido(1L, StatusPedido.RECEBIDO, Cliente(null, "123.456.789-09","João","cliente@teste.com"), emptyList<Combo>().toMutableList())
-    private var produto = Produto(1L, "Hamburguer", CategoriaEnum.LANCHE,"", BigDecimal.valueOf(10.0))
-    private var pedidoProduto = Combo(null, produto, pedido)
+    private val pedidoRequestValido = criarPedidoRequestValido()
+    private val pedido = pedido()
+    private val produto = produto()
+    private val pedidoProduto = Combo(null, produto, pedido)
 
     @Test
     fun `deve criar pedido com sucesso`() {
         `when`(produtoDomainUseCase.get(1L)).thenReturn(produto)
-        `when`(pedidoDomainUseCase.create(anyOrNull())).thenReturn(pedido.copy(id = 1L, produtos = listOf(pedidoProduto).toMutableList()))
+        `when`(pedidoDomainUseCase.create(any())).thenReturn(
+            pedido.copy(id = 1L, produtos = listOf(pedidoProduto).toMutableList())
+        )
 
         val resultado = pedidoApplicationController.create(pedidoRequestValido)
 
@@ -57,7 +73,7 @@ class PedidoApplicationControllerTest {
 
     @Test
     fun `deve buscar todos os pedidos`() {
-        val pageable: Pageable = Mockito.mock(Pageable::class.java)
+        val pageable: Pageable = PageRequest.of(0, 10)
         val pedidoPage: Page<Pedido> = PageImpl(listOf(pedido))
         `when`(pedidoDomainUseCase.getAll(pageable)).thenReturn(pedidoPage)
 
@@ -85,5 +101,129 @@ class PedidoApplicationControllerTest {
         val resultado = runCatching { pedidoApplicationController.checkout(1L) }
 
         assertTrue(resultado.isFailure)
+    }
+
+    @Test
+    fun `deve criar pedido sem produtos`() {
+        `when`(pedidoDomainUseCase.create(any())).thenReturn(pedido.copy(id = 1L, produtos = mutableListOf()))
+
+        val resultado = pedidoApplicationController.create(criarPedidoRequestSemProdutos())
+
+        assertNotNull(resultado)
+        assertEquals(pedido.id, resultado?.id)
+        assertTrue(resultado?.produtos.isNullOrEmpty())
+    }
+
+    @Test
+    fun `deve tratar pedido nao encontrado durante checkout`() {
+        `when`(pedidoDomainUseCase.checkout(1L)).thenReturn(null)
+
+        val resultado = runCatching { pedidoApplicationController.checkout(1L) }
+
+        assertTrue(resultado.isFailure)
+    }
+
+    @Test
+    fun `deve buscar todos os pedidos corretamente`() {
+        val pageable: Pageable = PageRequest.of(0, 10)
+        val pedidoPage: Page<Pedido> = PageImpl(listOf(pedido))
+        `when`(pedidoDomainUseCase.getAll(pageable)).thenReturn(pedidoPage)
+
+        val resultado = pedidoApplicationController.getAll(pageable)
+
+        assertNotNull(resultado)
+        assertEquals(1, resultado.totalElements)
+        assertEquals(pedido.id, resultado.content[0].id)
+        verify(pedidoDomainUseCase).getAll(pageable)
+    }
+
+    private fun criarPedidoRequestSemProdutos(): PedidoRequest {
+        return PedidoRequest(
+            ClienteRequest("123.456.789-09", "João", "cliente@teste.com"),
+            emptyList()
+        )
+    }
+
+    @Test
+    fun `deve retornar statusDTO quando pedido encontrado`() {
+        val pedidoId = 1L
+        val pedido = pedido().copy(id = pedidoId)
+        `when`(pedidoDomainUseCase.findPedidoById(pedidoId)).thenReturn(pedido)
+
+        val resultado = pedidoApplicationController.getStatusById(pedidoId)
+
+        assertEquals(pedido.toStatusDTO(), resultado)
+    }
+
+    @Test
+    fun `deve atualizar o status do pedido com sucesso`() {
+        val pedidoId = 1L
+        val novoStatus = StatusPedido.EM_PREPARACAO
+        val pedido = pedido().copy(id = pedidoId)
+
+        `when`(pedidoDomainUseCase.findPedidoById(pedidoId)).thenReturn(pedido)
+
+        `when`(pedidoDomainUseCase.updateStatus(eq(pedido), eq(novoStatus))).thenReturn(
+            pedido.copy(status = novoStatus)
+        )
+
+        val resultado = pedidoApplicationController.updateStatus(pedidoId, novoStatus)
+
+        assertEquals(novoStatus, resultado.status)
+    }
+
+    @Test
+    fun `deve executar webhook com sucesso quando mercadoPagoEnabled desligado`() {
+        val pedidoId = 1L
+        val orderId = "orderId"
+        val webhookPedidoRequest = criarWebhookPedidoRequest()
+        val pedido = pedido().copy(id = pedidoId)
+
+        `when`(pedidoDomainUseCase.findPedidoById(pedidoId)).thenReturn(pedido)
+
+        pedidoApplicationController.webhook(orderId, webhookPedidoRequest)
+
+        verify(pedidoDomainUseCase).closePedidoPagamento(eq(pedido), eq(null))
+    }
+
+    private fun criarWebhookPedidoRequest(): WebhookPedidoRequest {
+        return WebhookPedidoRequest(
+            "payment.update",
+            "v1",
+            Data("1"),
+            "2021-11-01T02:02:02Z",
+            "1",
+            false,
+            "payment",
+            1
+        )
+    }
+
+
+    private fun criarPedidoRequestValido(): PedidoRequest {
+        return PedidoRequest(
+            ClienteRequest("123.456.789-09", "João", "cliente@teste.com"),
+            listOf(1L)
+        )
+    }
+
+    private fun pedido(): Pedido {
+        return Pedido(
+            1L,
+            StatusPedido.RECEBIDO,
+            StatusPagamento.AGUARDANDO_APROVACAO,
+            Cliente(null, "123.456.789-09", "João", "cliente@teste.com"),
+            emptyList<Combo>().toMutableList()
+        )
+    }
+
+    private fun produto(): Produto {
+        return Produto(
+            1L,
+            "Hamburguer",
+            CategoriaEnum.LANCHE,
+            "",
+            BigDecimal.valueOf(10.0)
+        )
     }
 }

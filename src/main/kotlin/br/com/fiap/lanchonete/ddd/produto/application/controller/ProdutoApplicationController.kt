@@ -4,7 +4,7 @@ import br.com.fiap.lanchonete.ddd.produto.application.dto.request.ProdutoRequest
 import br.com.fiap.lanchonete.ddd.produto.domain.entities.enums.CategoriaEnum
 import br.com.fiap.lanchonete.ddd.produto.domain.entities.extensions.toDTO
 import br.com.fiap.lanchonete.ddd.produto.domain.entities.extensions.toEntity
-import br.com.fiap.lanchonete.ddd.produto.domain.service.ProdutoDomainUseCase
+import br.com.fiap.lanchonete.ddd.produto.domain.usecases.ProdutoDomainUseCase
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 

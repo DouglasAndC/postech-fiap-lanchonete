@@ -1,4 +1,4 @@
-package br.com.fiap.lanchonete.ddd.produto.domain.service
+package br.com.fiap.lanchonete.ddd.produto.domain.usecases
 
 import br.com.fiap.lanchonete.ddd.produto.application.gateway.ProdutoRepositoryGateway
 import br.com.fiap.lanchonete.ddd.produto.domain.entities.Produto
