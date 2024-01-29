@@ -11,6 +11,7 @@ data class PedidoResponse(
     val pagamento: StatusPagamento?,
     val cliente: ClienteResponse?,
     val produtos: List<ComboResponse>,
+    val qr: String?,
     val createDate: LocalDateTime?,
     val updateDate: LocalDateTime?
 )

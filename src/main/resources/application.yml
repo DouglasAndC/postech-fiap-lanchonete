@@ -30,3 +30,9 @@ logging:
   level:
     org.hibernate.SQL: DEBUG
     org.hibernate.type: TRACE
+
+mercado-pago:
+  enabled: true
+  bearer-token: TEST-6374986705463106-012119-3af27c9e42cea21115c47aa04fabb992-208073926
+  collector-id: 208073926
+  pos-id: SUC001POSSUC001001
