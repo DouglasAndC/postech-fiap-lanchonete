@@ -33,13 +33,17 @@ jobs:
       - name: Build Docker Image
         run: docker build -t lanchonete .
 
-      - name: Create tag repository
-        run: |
-          version=$(helm show chart ./manifest/lanchonete/Chart.yaml | grep "^version:" | awk '{print $2}')
-          docker tag lanchonete:latest ${{ secrets.ECR_HOST }}/lanchonete:${version}
-
       - name: Push Docker Image
         run: docker push ${{ secrets.ECR_HOST }}/lanchonete:latest
+
+      - name: Get Helm Chart version
+        run: |
+          version=$(helm show chart ./manifest/lanchonete/ | grep "^version:" | awk '{print $2}')
+          echo "Helm Chart version: $version"
+
+      - name: Create tag repository
+        run:
+          docker tag lanchonete:latest ${{ secrets.ECR_HOST }}/lanchonete:${version}
 
       - name: Configure kubectl
         run: aws eks update-kubeconfig --name lanchonete-cluster
