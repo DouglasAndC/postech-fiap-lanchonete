@@ -36,14 +36,15 @@ jobs:
       - name: Get Helm Chart version
         run: |
           version=$(helm show chart ./manifest/lanchonete/ | grep "^version:" | awk '{print $2}')
-          echo "Helm Chart version: $version"  
+          echo "Helm Chart version: $version"
+          echo "VERSION=$version" >> $GITHUB_ENV
 
       - name: Create tag repository
         run:
-          docker tag lanchonete:latest ${{ secrets.ECR_HOST }}/lanchonete:${version}
+          docker tag lanchonete:latest "${{ secrets.ECR_HOST }}/lanchonete:${{ env.VERSION }}"
 
       - name: Push Docker Image
-        run: docker push ${{ secrets.ECR_HOST }}/lanchonete:latest
+        run: docker push ${{ secrets.ECR_HOST }}/lanchonete:${{ env.VERSION }}
 
       - name: Configure kubectl
         run: aws eks update-kubeconfig --name lanchonete-cluster
@@ -55,4 +56,4 @@ jobs:
             manifest/lanchonete \
             --namespace default \
             --set image.repository=${{ secrets.ECR_HOST }}/lanchonete \
-            --set image.tag=${version}
+            --set image.tag=${{ env.VERSION }}
