@@ -86,6 +86,24 @@ class PedidoDomainUseCaseTest {
         }
     }
 
+
+    @Test
+    fun `deve atualizar o status do pedido com sucesso`() {
+        val pedidoId = 1L
+        val novoStatus = StatusPedido.EM_PREPARACAO
+        val pedido = pedido.copy(id = pedidoId)
+
+        `when`(pedidoRepositoryGateway.findPedidoById(pedidoId)).thenReturn(pedido)
+        `when`(pedidoRepositoryGateway.save(pedido)).thenReturn(
+            pedido.copy(status = novoStatus)
+        )
+
+        assertEquals(StatusPedido.RECEBIDO, pedido.status)
+        assertEquals(novoStatus, pedidoDomainUseCase.updateStatus(pedido, novoStatus).status)
+    }
+
+
+
     private fun assertsPedido(response: Pedido) {
         assertEquals(response.id, pedido.id)
         assertEquals(response.produtos, pedido.produtos)

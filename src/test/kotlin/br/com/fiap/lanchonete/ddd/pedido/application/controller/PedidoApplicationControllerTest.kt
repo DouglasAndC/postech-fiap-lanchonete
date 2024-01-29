@@ -10,6 +10,7 @@ import br.com.fiap.lanchonete.ddd.pedido.domain.entities.enums.StatusPagamento
 import br.com.fiap.lanchonete.ddd.pedido.domain.entities.enums.StatusPedido
 import br.com.fiap.lanchonete.ddd.pedido.domain.entities.extension.toStatusDTO
 import br.com.fiap.lanchonete.ddd.pedido.domain.usecases.PedidoDomainUseCase
+import br.com.fiap.lanchonete.ddd.pedido.domain.usecases.QrCodeDomainUseCase
 import br.com.fiap.lanchonete.ddd.produto.domain.entities.Produto
 import br.com.fiap.lanchonete.ddd.produto.domain.entities.enums.CategoriaEnum
 import br.com.fiap.lanchonete.ddd.produto.domain.usecases.ProdutoDomainUseCase
@@ -41,6 +42,11 @@ class PedidoApplicationControllerTest {
 
     @Mock
     private lateinit var clienteDomainUseCase: ClienteDomainUseCase
+
+    @Mock
+    private lateinit var qrCodeDomainUseCase: QrCodeDomainUseCase
+
+    private var mercadoPagoEnabled = false
 
     @InjectMocks
     private lateinit var pedidoApplicationController: PedidoApplicationController

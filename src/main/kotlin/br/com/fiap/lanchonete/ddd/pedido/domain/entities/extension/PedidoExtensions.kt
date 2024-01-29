@@ -16,14 +16,15 @@ fun Pedido.toStatusDTO() = PedidoPagamentoStatusResponse(
     updateDate = this.updateDate
 )
 
-fun Pedido.toDTO() = PedidoResponse(
+fun Pedido.toDTO(qr: String? = null) = PedidoResponse(
     id = this.id,
     status = this.status,
     pagamento = this.pagamento,
     cliente = this.cliente?.toDTO(),
     produtos = this.produtos.map { it.toDTO() },
     createDate = this.createDate,
-    updateDate = this.updateDate
+    updateDate = this.updateDate,
+    qr = qr
 )
 
 fun Combo.toDTO() = ComboResponse(

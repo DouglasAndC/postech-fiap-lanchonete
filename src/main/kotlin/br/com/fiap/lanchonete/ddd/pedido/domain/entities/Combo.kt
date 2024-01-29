@@ -45,4 +45,9 @@ data class Combo(
     fun calcularPrecoTotal(): BigDecimal {
         return produto.preco.multiply(quantidade.toBigDecimal())
     }
+
+    override fun toString(): String {
+        return "Combo(id=$id, produto=${produto.id}, pedido=${pedido.id}, quantidade=$quantidade, " +
+                "createDate=$createDate, updateDate=$updateDate)"
+    }
 }
