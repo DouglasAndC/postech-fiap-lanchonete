@@ -1,7 +1,7 @@
 # postech-fiap-lanchonete
-# Lanchonete - Versão 1.0.0
+# Lanchonete - Versão 2.0.0
 
-Bem-vindo ao projeto **Lanchonete**! Esta é a versão 1.0.0, e abaixo você encontrará todas as instruções necessárias para começar a utilizar Docker e Docker Compose para rodar a aplicação.
+Bem-vindo ao projeto **Lanchonete**! Esta é a versão 2.0.0, e abaixo você encontrará todas as instruções necessárias para começar a utilizar Docker e Docker Compose para rodar a aplicação.
 
 ## Arquitetura do Projeto:
 
@@ -121,3 +121,17 @@ Após o processo de preparação do pedido, é possível alterar o status para "
 Utilize esta API para atualizar o status do pedido identificado pelo ID fornecido, alterando-o para "pronto". Este passo indica que o pedido está preparado e pronto para ser entregue ou retirado.
 
 Ao realizar esta operação, você conclui o processo de preparação do pedido, garantindo uma gestão eficiente do status no sistema da lanchonete.
+
+# Links do Projeto
+
+Grupo 31:
+
+RM351033: Douglas Andrade Cerqueira da Silva
+
+RM351085: Mateus Mosquera Vaz Pinto
+
+- **Notion**: https://www.notion.so/DDD-Lanchonete-1ee618b71633412bba8d8bc1ee8abb24?pvs=4
+- **Miro**: https://miro.com/app/board/uXjVNaJOrLg=/
+- **Youtube**: https://youtu.be/nJMPecZI_IQ
+- **Swagger**: http://localhost:8080/lanchonete/api/v1/swagger-ui/index.html
+- **Postman**: https://www.postman.com/fiap-lanchonete/workspace/lanchonete-fiap/collection/30674104-a326e42c-d972-4a48-9c46-a8417cb0327b?action=share&creator=30674104
