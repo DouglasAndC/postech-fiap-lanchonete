@@ -12,7 +12,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
   web-1:
-    image: lanchonete:1.0.0
+    image: lanchonete:latest
     ports:
       - "8080:8080"
     environment:

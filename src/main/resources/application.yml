@@ -12,8 +12,16 @@ spring:
       hibernate:
         globally_quoted_identifiers: true
         globally_quoted_identifiers_skip_column_definitions: true
+        batch_fetch_style: dynamic
+        default_batch_fetch_size: 16
+        jdbc:
+          batch_size: 16
+          order_inserts: true
+          order_updates: true
+
     show-sql: true
     generate-ddl: true
+
 server:
   servlet:
     context-path: /lanchonete/api/v1
@@ -22,3 +30,9 @@ logging:
   level:
     org.hibernate.SQL: DEBUG
     org.hibernate.type: TRACE
+
+mercado-pago:
+  enabled: ${MERCADO_PAGO_ENABLED:false}
+  bearer-token: TEST-??????????-??????????-??????????
+  collector-id: ??????????
+  pos-id: SUC001POSSUC001001
