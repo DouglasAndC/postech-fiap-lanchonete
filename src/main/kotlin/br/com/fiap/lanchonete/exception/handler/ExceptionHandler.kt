@@ -38,14 +38,14 @@ class ExceptionHandler {
         return ResponseEntity(responseBody, HttpStatus.BAD_REQUEST)
     }
 
-//    @ExceptionHandler(RuntimeException::class)
-//    fun unexpectedException(unexpectedException: Exception): ResponseEntity<ResponseErrorDto> {
-//        val responseBody = ResponseErrorDto(
-//            status = HttpStatus.INTERNAL_SERVER_ERROR.value(),
-//            error = HttpStatus.INTERNAL_SERVER_ERROR.reasonPhrase,
-//            messages = listOf(unexpectedException.message ?: "An error occurred"))
-//        log.error("UnexpectedException: ${unexpectedException.cause} - ${unexpectedException.message}")
-//        return ResponseEntity(responseBody, HttpStatus.INTERNAL_SERVER_ERROR)
-//    }
+    @ExceptionHandler(Exception::class)
+    fun unexpectedException(unexpectedException: Exception): ResponseEntity<ResponseErrorDto> {
+        val responseBody = ResponseErrorDto(
+            status = HttpStatus.INTERNAL_SERVER_ERROR.value(),
+            error = HttpStatus.INTERNAL_SERVER_ERROR.reasonPhrase,
+            messages = listOf(unexpectedException.message ?: "An error occurred"))
+        log.error("UnexpectedException: ${unexpectedException.cause} - ${unexpectedException.message}")
+        return ResponseEntity(responseBody, HttpStatus.INTERNAL_SERVER_ERROR)
+    }
 
 }
