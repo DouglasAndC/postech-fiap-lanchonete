@@ -16,11 +16,11 @@ jobs:
         fetch-depth: 0
       
     - run: mvn test
-      with:
-        java-version: 17
     - name: Generate JaCoCo Badge
       id: jacoco
       uses: cicirello/jacoco-badge-generator@v2.11.0
+      with:
+        java-version: 17
     - name: Log coverage percentage
       run: |
         echo "coverage = ${{ steps.jacoco.outputs.coverage }}"
