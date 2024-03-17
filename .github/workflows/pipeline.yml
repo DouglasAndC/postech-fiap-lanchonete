@@ -119,11 +119,20 @@ jobs:
   deploy-Prod:
     runs-on: ubuntu-latest
     
-    if: github.ref == 'refs/heads/main'
+#    if: github.ref == 'refs/heads/main'
     environment:
       name: prod
     needs: push-to-registry
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Get Helm Chart version
+        run: |
+          version=$(helm show chart ./manifest/lanchonete/ | grep "^version:" | awk '{print $2}')
+          echo "Helm Chart version: $version"
+          echo "VERSION=$version" >> $GITHUB_ENV    
+
       - name: Setup AWS EKS
         uses: aws-actions/configure-aws-credentials@v1
         with:
