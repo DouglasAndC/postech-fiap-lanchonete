@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - pipeline-config
+      - develop
   
 jobs:
   unit-test:
@@ -120,7 +120,7 @@ jobs:
   deploy-Prod:
     runs-on: ubuntu-latest
     
-#    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     environment:
       name: prod
     needs: push-to-registry
