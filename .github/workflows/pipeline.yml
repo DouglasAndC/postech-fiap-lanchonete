@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - pipeline-config
   
 jobs:
   unit-test:
@@ -14,10 +15,12 @@ jobs:
       with:
         fetch-depth: 0
       
-    - run: mvn test  
+    - run: mvn test
+      with:
+        java-version: 17
     - name: Generate JaCoCo Badge
       id: jacoco
-      uses: cicirello/jacoco-badge-generator@v2.0.1
+      uses: cicirello/jacoco-badge-generator@v2.11.0
     - name: Log coverage percentage
       run: |
         echo "coverage = ${{ steps.jacoco.outputs.coverage }}"
