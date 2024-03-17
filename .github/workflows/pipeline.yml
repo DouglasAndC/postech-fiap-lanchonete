@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - pipeline-config
   
 jobs:
   unit-test:
